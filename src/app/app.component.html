@@ -29,6 +29,7 @@
                           placeholder="Search for Stat"
                           name="stat"
                           [required]="true"
+                          [forceSelection]="true"
                           (onSelect)="onStatSelectChange($event)"
                           (completeMethod)="filterStats($event)"></p-autoComplete>
 

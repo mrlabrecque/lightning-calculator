@@ -26,7 +26,8 @@ export class AppComponent implements OnInit {
    public players: Player[] = [];
   public selectedTeam: any = { };
   public selectedPlayers: any = []
-  public buttonOptions: any[] = [{ label: 'By Game', value: 'game' }, { label: 'Month Avg.', value: 'month' }, { label: 'Totals', value: 'totals' }];
+  public buttonOptions: any[] = [{ label: 'By Game', value: 'game' }, { label: 'By Month', value: 'month' }];
+  public totals: boolean = false;
   public selectedButton: any = 'game';
   public dataForGraph: any[] = [];
   public stats: any[] = STATS;
@@ -63,6 +64,9 @@ export class AppComponent implements OnInit {
   onStatSelectChange(stat: any) {
     this.statCategory = stat.category;
     this.statToGraph = stat.value;
+  }
+  onShowTotalsClicked() {
+    this.refreshChartDataPerMonth();
   }
     filterStats(event: AutoCompleteCompleteEvent) {
         let filtered: any[] = [];
@@ -146,7 +150,7 @@ export class AppComponent implements OnInit {
           rawDataSets.push({
             Name: playerName,
             Month: month,
-            Value: avgMonthStat / monthlyGames.length
+            Value: !this.totals ? (avgMonthStat / monthlyGames.length) : avgMonthStat
           });   
         })
       });

@@ -11,7 +11,7 @@
                       [(ngModel)]="selectedTeam"
                       optionLabel="name"
                       placeholder="Select a Team"
-                      styleClass="full-width"
+                      styleClass="min-w-full max-w-full"
                       name="team"
                       [required]="true"
                       (onChange)="onTeamSelectChange()" /></div>
@@ -25,9 +25,9 @@
                           [dropdown]="true"
                           [group]="true"
                           [field]="'label'"
-                          styleClass="full-width"
                           placeholder="Search for Stat"
                           name="stat"
+                          styleClass="min-w-full max-w-full"
                           [required]="true"
                           [forceSelection]="true"
                           (onSelect)="onStatSelectChange($event)"
@@ -74,8 +74,19 @@
 <ng-container *ngIf="statForm.form.valid && statForm.submitted">
   <div class="shadow-4 m-3 p-4">
     <div class="grid">
-      <div class="col-12">
-        Data
+      <div class="col-12 flex justify-content-between align-items-center">
+        <div>Data</div>
+
+        <ng-container *ngIf="selectedButton === 'month'">
+          <div class="flex align-items-center">
+            <div class="text-xs">Show totals</div>
+            <div><p-inputSwitch [(ngModel)]="totals"
+                             (onChange)="onShowTotalsClicked()" />
+            </div>
+          </div>
+
+        </ng-container>
+
       </div>
       <div class="col-12">
         <p-chart type="line"

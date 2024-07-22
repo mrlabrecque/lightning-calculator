@@ -9,6 +9,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { FieldsetModule } from 'primeng/fieldset';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { ListboxModule } from 'primeng/listbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -35,7 +36,8 @@ import { AppComponent } from './app.component';
     ButtonModule,
     MultiSelectModule,
     SelectButtonModule,
-    FormsModule
+    FormsModule,
+    InputSwitchModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

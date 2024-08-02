@@ -1,10 +1,78 @@
 <div class="shadow-4 m-3">
-    <form #statForm="ngForm"
-          (ngSubmit)="createNewGame()">
-        <div class="formgrid grid p-4">
-            <p-button label="New Game"
-                      type="submit"
-                      [raised]="true"></p-button>
+    <ng-container *ngIf="!currentGame?.id">
+        <form #statForm="ngForm"
+              (ngSubmit)="createNewGame()">
+            <div class="formgrid grid p-4">
+                <p-button label="New Game"
+                          type="submit"
+                          [raised]="true"></p-button>
+            </div>
+        </form>
+    </ng-container>
+    <ng-container *ngIf="currentGame">
+        <div class="grid grid-nogutter">
+            <div class="col-4">
+                <p-orderList [value]="positions"
+                             header="Positions">
+                    <ng-template let-position
+                                 pTemplate="item">
+                        <div class="flex flex-wrap p-2 align-items-center gap-3">
+                            <div class="flex-1 flex flex-column gap-2">
+                                <span class="font-bold">{{ position.label }}</span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-orderList>
+            </div>
+            <div class="col-8">
+                <p-orderList [value]="currentInningPlayers"
+                             header="Players"
+                             [dragdrop]="true">
+                    <ng-template let-inningPlayer
+                                 pTemplate="item">
+                        <div class="flex flex-wrap p-2 align-items-center gap-3">
+                            <span class="font-bold">{{ inningPlayer?.playerName }}</span>
+                        </div>
+                    </ng-template>
+                </p-orderList>
+            </div>
         </div>
-    </form>
+    </ng-container>
+
 </div>
+{{currentGame | json}}
+<br>
+{{currentInning | json}}
+
+
+
+
+
+
+
+<!-- 
+<p-orderList [value]="products"
+             [listStyle]="{ 'max-height': '30rem' }"
+             header="List of Products"
+             [dragdrop]="true">
+    <ng-template let-product
+                 pTemplate="item">
+        <div class="flex flex-wrap p-2 align-items-center gap-3">
+            <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{ product.image }}"
+                 [alt]="product.name"
+                 class="w-4rem shadow-2 flex-shrink-0 border-round" />
+            <div class="flex-1 flex flex-column gap-2">
+                <span class="font-bold">{{ product.name }}</span>
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-tag text-sm"></i>
+                    <span>
+                        {{ product.category }}
+                    </span>
+                </div>
+            </div>
+            <span class="font-bold text-900">
+                {{ '$' + product.price }}
+            </span>
+        </div>
+    </ng-template>
+</p-orderList> -->

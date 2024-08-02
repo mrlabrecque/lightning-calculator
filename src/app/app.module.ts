@@ -1,3 +1,4 @@
+import { CdkDrag } from '@angular/cdk/drag-drop';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DropdownModule } from 'primeng/dropdown';
@@ -22,9 +23,11 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { MenubarModule } from 'primeng/menubar';
+import { OrderListModule } from 'primeng/orderlist';
 import { HeaderComponent } from './header/header.component';
-import { TrendsComponent } from './trends/trends.component';
 import { LineupComponent } from './lineup/lineup.component';
+import { TrendsComponent } from './trends/trends.component';
+
 
 
 @NgModule({
@@ -53,7 +56,9 @@ import { LineupComponent } from './lineup/lineup.component';
     BadgeModule,
     AvatarModule,
     InputTextModule,
-    RippleModule
+    RippleModule,
+    OrderListModule,
+    CdkDrag
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

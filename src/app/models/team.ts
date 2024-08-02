@@ -1,4 +1,4 @@
-export interface Team {
-    id: number;
-    name: string;
+export class Team {
+    id?: number;
+    name?: string;
 }

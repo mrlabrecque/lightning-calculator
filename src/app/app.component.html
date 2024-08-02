@@ -1,98 +1,10 @@
-<div class="text-5xl font-bold m-3">
-  Stats and Trends
-</div>
-<div class="shadow-4 m-3">
-  <form #statForm="ngForm"
-        (ngSubmit)="onSubmit()">
-    <div class="formgrid grid p-4">
-      <div class="field col-6">
-        <label for="team">Team</label>
-        <div><p-dropdown [options]="teams"
-                      [(ngModel)]="selectedTeam"
-                      optionLabel="name"
-                      placeholder="Select a Team"
-                      styleClass="min-w-full max-w-full"
-                      name="team"
-                      [required]="true"
-                      (onChange)="onTeamSelectChange()" /></div>
-
-      </div>
-      <div class="field col-6">
-        <label for="stat">Stat</label>
-        <div>
-          <p-autoComplete [(ngModel)]="statToGraph"
-                          [suggestions]="filteredStats"
-                          [dropdown]="true"
-                          [group]="true"
-                          [field]="'label'"
-                          placeholder="Search for Stat"
-                          name="stat"
-                          styleClass="min-w-full max-w-full"
-                          [required]="true"
-                          [forceSelection]="true"
-                          (onSelect)="onStatSelectChange($event)"
-                          (completeMethod)="filterStats($event)"></p-autoComplete>
-
-        </div>
-      </div>
-      <div class="field col-6">
-        <label for="players">Players</label>
-        <p-multiSelect [options]="players"
-                       [(ngModel)]="selectedPlayers"
-                       placeholder="Select Players"
-                       optionLabel="Name"
-                       display="chip"
-                       name="players"
-                       [required]="true"
-                       styleClass="min-w-full max-w-full"
-                       (onChange)="onPlayerSelectChange($event.value)"
-                       [showClear]="true"></p-multiSelect>
-
-      </div>
-      <div class="field col-6">
-        <label for="type">Type</label>
-        <p-selectButton [options]="buttonOptions"
-                        [(ngModel)]="selectedButton"
-                        optionLabel="label"
-                        optionValue="value"
-                        [required]="true"
-                        name="type"></p-selectButton>
-      </div>
-      <div class="col">
-        <div class="flex flex-wrap align-items-center justify-content-end"
-             style="min-height:100%; margin-top: 5px;">
-          <p-button label="Submit"
-                    type="submit"
-                    [disabled]="!statForm.form.valid"
-                    [raised]="true"></p-button>
-        </div>
-
-      </div>
-    </div>
-  </form>
-</div>
-<ng-container *ngIf="statForm.form.valid && statForm.submitted">
-  <div class="shadow-4 m-3 p-4">
-    <div class="grid">
-      <div class="col-12 flex justify-content-between align-items-center">
-        <div>Data</div>
-
-        <ng-container *ngIf="selectedButton === 'month'">
-          <div class="flex align-items-center">
-            <div class="text-xs">Show totals</div>
-            <div><p-inputSwitch [(ngModel)]="totals"
-                             (onChange)="onShowTotalsClicked()" />
-            </div>
-          </div>
-
-        </ng-container>
-
-      </div>
-      <div class="col-12">
-        <p-chart type="line"
-                 [data]="chartData"
-                 [options]="chartOptions"></p-chart>
-      </div>
-    </div>
-  </div>
+<app-menu-bar></app-menu-bar>
+<app-header [activePage]="activePage"></app-header>
+<ng-container *ngIf="activePage === 'stats'">
+  <app-trends>
+  </app-trends>
+</ng-container>
+<ng-container *ngIf="activePage === 'lineup'">
+  <app-lineup>
+  </app-lineup>
 </ng-container>

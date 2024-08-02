@@ -10,19 +10,30 @@ import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { RippleModule } from 'primeng/ripple';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
-
-
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
+import { MenubarModule } from 'primeng/menubar';
+import { HeaderComponent } from './header/header.component';
+import { TrendsComponent } from './trends/trends.component';
+import { LineupComponent } from './lineup/lineup.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MenuBarComponent,
+    HeaderComponent,
+    TrendsComponent,
+    LineupComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +48,12 @@ import { AppComponent } from './app.component';
     MultiSelectModule,
     SelectButtonModule,
     FormsModule,
-    InputSwitchModule
+    InputSwitchModule,
+    MenubarModule,
+    BadgeModule,
+    AvatarModule,
+    InputTextModule,
+    RippleModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

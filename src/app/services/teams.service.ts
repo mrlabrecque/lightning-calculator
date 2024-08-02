@@ -37,7 +37,7 @@ export class TeamsService {
       .from('teams')
       .select('*')
       .eq('id', id);
-    if (data){
+    if (data && data?.length > 0){
       this.currentTeam$.next(<Team>data[0]);
     }
   }

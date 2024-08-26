@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, Subscription, filter } from 'rxjs';
+import { BehaviorSubject, filter, Subscription } from 'rxjs';
 import { Game } from '../models/game';
 import { Inning } from '../models/inning';
 import { InningPlayer } from '../models/inning-player';
@@ -19,17 +19,18 @@ import { TeamsService } from '../services/teams.service';
 export class LineupComponent {
   public positions: any[] = POSITIONS;
   currentGameSubscription: Subscription = this.gameService.currentGame$
-  .pipe(filter((value) => value?.id !== undefined))
+  .pipe(filter((value) => !!value.id))
   .subscribe(res => this.currentGame = res)
   currentGame: Game = new Game(); 
   currentInningSubscription: Subscription = this.inningService.currentInning$
-    .pipe(filter((value) => value?.id !== undefined))
+    .pipe(filter((value) => !!value.id))
     .subscribe(res => this.onCurrentInningChanged(res))
   currentInning: Inning = new Inning(); 
 
   currentInningPlayers$: BehaviorSubject<InningPlayer[]> = new BehaviorSubject([new InningPlayer()]);
   currentInningPlayers: InningPlayer[] = [];
   currentGameRoster: Player[] = [];
+  currentInningNumber$: BehaviorSubject<number> = new BehaviorSubject(1);
 
   splitButtonList = [
     {
@@ -48,7 +49,10 @@ export class LineupComponent {
   }
   onCurrentInningChanged(inning: Inning) {
     this.currentInning = inning;
-    this.createInningPlayers();
+    if (this.currentInning.id > 0) {
+      this.currentInningNumber$.next(this.currentInning.inningNumber);
+          this.createInningPlayers();
+    }
   }
   async createInningPlayers() {
     const currentPlayers = [...this.currentGameRoster];
@@ -74,6 +78,7 @@ export class LineupComponent {
       })
     }
     this.currentInningPlayers = [...tempInningPlayers];
+    this.currentInningNumber$.next(this.currentInning.inningNumber);
     this.updateMostBenchedPlayers();
   }
   private addAnyBenchPositionsNeeded() {
@@ -113,13 +118,13 @@ export class LineupComponent {
     })
   }
   onNextInningClicked(){
-    this.inningService.insertNewActiveInning(this.currentGame);
+    this.inningService.createNewActiveInning(this.currentGame?.id);
   }
   findBenchedRecords(playerId: number = 0, benchedRecords: any) {
     const benchedTimes = benchedRecords?.filter((rec:any) => rec.playerId === playerId)
     return benchedTimes?.length ?? 0
   }
   completeGame() {
-    console.log("complete game");
+    this.gameService.completeGame(this.currentGame?.id);
   }
 }

@@ -1,5 +1,5 @@
 <div class="shadow-4 m-3">
-    <ng-container *ngIf="!currentGame?.id">
+    <ng-container *ngIf="!currentGame.id">
         <form #statForm="ngForm"
               (ngSubmit)="createNewGame()">
             <div class="formgrid grid p-4 flex align-items-end">
@@ -14,9 +14,8 @@
             </div>
         </form>
     </ng-container>
-    <ng-container *ngIf="currentInning?.id">
-        <p-card [header]="'Inning ' + currentInning.inningNumber">
-
+    <ng-container *ngIf="currentInning.id">
+        <p-card [header]="'Inning ' + currentInningNumber$.value">
             <div class="grid grid-nogutter">
                 <div class="col-3">
                     <p-orderList [value]="positions"

@@ -1,7 +1,7 @@
 export class Inning {
-    id?: number;
+    id: number = 0;
     gameId?: number;
     active?: boolean;
-    inningNumber?: number;
+    inningNumber: number = 1;
     submitted: boolean = false;
 }

@@ -1,5 +1,5 @@
 export class Player {
-    Id?: number;
+    id?: number;
     TeamId?: number;
     Name?: string;
     OffensiveData?: string;

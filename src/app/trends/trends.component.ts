@@ -8,7 +8,6 @@ import { Subscription } from 'rxjs';
 import { MONTHS } from '../models/months';
 import { Player } from '../models/player';
 import { STATS } from '../models/stats';
-import { Team } from '../models/team';
 import { ActivePageService } from '../services/active-page.service';
 import { RosterService } from '../services/roster.service';
 import { TeamsService } from '../services/teams.service';
@@ -20,10 +19,7 @@ import { TeamsService } from '../services/teams.service';
 })
 export class TrendsComponent {
   public rosterSubscription: Subscription = this.playerService.currentRoster$.subscribe(res => this.players = res)
-  public allTeamsSubscription: Subscription = this.teamService.allTeams$.subscribe(res => this.teams = res)
-  public teams: Team[] = [];
    public players: Player[] = [];
-  public selectedTeam: any = { };
   public selectedPlayers: any = []
   public buttonOptions: any[] = [{ label: 'By Game', value: 'game' }, { label: 'By Month', value: 'month' }];
   public totals: boolean = false;
@@ -43,12 +39,6 @@ export class TrendsComponent {
     private teamService: TeamsService,
     private playerService: RosterService) {
   }
-  public ngOnInit() {
-  }
-  async onTeamSelectChange() {
-    this.teamService.setCurrentTeam(this.selectedTeam.id);
-  }
-
   onPlayerSelectChange(players: Player[]) {
     this.selectedPlayers = players;
   }

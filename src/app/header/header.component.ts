@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @Input() public activePage: string | undefined;
+  @Input() public activePageTitle: string | undefined;
 }

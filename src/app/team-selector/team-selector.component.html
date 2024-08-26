@@ -1,0 +1,9 @@
+<label for="team">Team</label>
+<div><p-dropdown [options]="teams"
+                [(ngModel)]="selectedTeam"
+                optionLabel="name"
+                placeholder="Select a Team"
+                styleClass="min-w-full max-w-full"
+                name="team"
+                [required]="true"
+                (onChange)="onTeamSelectChange()" /></div>

@@ -21,7 +21,7 @@ export class MenuBarComponent {
               command: () => this.onMenuItemClicked("stats")
             },
             {
-              label: 'Defensive Lineup Setter',
+              label: 'Defensive Lineup',
               icon: 'pi pi-list',
               command: () => this.onMenuItemClicked("lineup")
             } 

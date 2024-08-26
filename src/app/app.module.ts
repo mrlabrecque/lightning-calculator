@@ -20,13 +20,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
+import { MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
+import { CardModule } from 'primeng/card';
+import { ChipModule } from 'primeng/chip';
 import { MenubarModule } from 'primeng/menubar';
 import { OrderListModule } from 'primeng/orderlist';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { ToastModule } from 'primeng/toast';
 import { HeaderComponent } from './header/header.component';
 import { LineupComponent } from './lineup/lineup.component';
+import { TeamSelectorComponent } from './team-selector/team-selector.component';
 import { TrendsComponent } from './trends/trends.component';
+
 
 
 
@@ -36,7 +43,8 @@ import { TrendsComponent } from './trends/trends.component';
     MenuBarComponent,
     HeaderComponent,
     TrendsComponent,
-    LineupComponent
+    LineupComponent,
+    TeamSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -58,9 +66,13 @@ import { TrendsComponent } from './trends/trends.component';
     InputTextModule,
     RippleModule,
     OrderListModule,
-    CdkDrag
+    CdkDrag,
+    CardModule,
+    ToastModule,
+    SplitButtonModule,
+    ChipModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe,MessageService],
   bootstrap: [AppComponent],
     schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

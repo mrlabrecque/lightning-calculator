@@ -3,16 +3,7 @@
           (ngSubmit)="onSubmit()">
         <div class="formgrid grid p-4">
             <div class="field col-6">
-                <label for="team">Team</label>
-                <div><p-dropdown [options]="teams"
-                                [(ngModel)]="selectedTeam"
-                                optionLabel="name"
-                                placeholder="Select a Team"
-                                styleClass="min-w-full max-w-full"
-                                name="team"
-                                [required]="true"
-                                (onChange)="onTeamSelectChange()" /></div>
-
+                <app-team-selector></app-team-selector>
             </div>
             <div class="field col-6">
                 <label for="stat">Stat</label>

@@ -17,7 +17,7 @@ export class RosterService {
   }
   getPlayerById(id: number): Player | undefined {
     const currentRoster = this.currentRoster$.value;
-    return currentRoster.find(player => player.Id === id);
+    return currentRoster.find(player => player.id === id);
   }
   async setSelectedRoster(id: number | undefined): Promise<void> {
     const { data, error } = await this.supabaseService.supabase.from('players').select().eq("TeamId", id);

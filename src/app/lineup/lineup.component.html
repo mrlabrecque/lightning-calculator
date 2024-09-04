@@ -29,25 +29,37 @@
                         </ng-template>
                     </p-orderList>
                 </div>
-                <div class="col-9">
+                <div class="col-9 linup-container">
                     <form #inningForm="ngForm"
                           (ngSubmit)="submitInning()">
-                        <p-orderList [value]="currentInningPlayers"
-                                     header="Players"
-                                     [dragdrop]="true"
-                                     [stripedRows]="true">
-                            <ng-template let-inningPlayer
-                                         let-i="index"
-                                         pTemplate="item">
-                                <div class="flex justify-content-between">
-                                    <span class="font-bold">{{ inningPlayer?.playerName }}</span>
-                                    <span *ngIf="i>8">
-                                        <p-badge [value]="inningPlayer.timesBenched + 1"
-                                                 severity="danger" />
-                                    </span>
+                        <div class="lineup">
+
+                            <p-orderList [value]="currentInningPlayers"
+                                         header="Players"
+                                         [dragdrop]="!currentInning.submitted"
+                                         [stripedRows]="true">
+                                <ng-template let-inningPlayer
+                                             let-i="index"
+                                             pTemplate="item">
+                                    <div class="flex justify-content-between">
+                                        <span class="font-bold">{{ inningPlayer?.playerName }}</span>
+                                        <span *ngIf="i>8">
+                                            <p-badge [value]="inningPlayer.timesBenched + 1"
+                                                     severity="danger" />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                            </p-orderList>
+                            <ng-container *ngIf="currentInning.submitted">
+                                <div class="locked-overlay">
+                                    <div class="locked-object"><i class="pi pi-lock"
+                                           style="font-size: 2.5rem">
+                                        </i>
+                                        <p>Click "Next Inning" to unlock</p>
+                                    </div>
                                 </div>
-                            </ng-template>
-                        </p-orderList>
+                            </ng-container>
+                        </div>
                         <div class="flex justify-content-end mt-2">
                             <ng-container *ngIf="!currentInning?.submitted">
                                 <p-button label="Save Inning"

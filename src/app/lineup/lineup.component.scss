@@ -12,3 +12,31 @@
     line-height: 1rem;
   }
 }
+.lineup {
+  position: relative;
+}
+.locked-overlay {
+          display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top:0;
+        left:0;
+        background: rgba(0,0,0,0.5);
+        z-index:9999;
+        color:#fff;
+        overflow:hidden;
+        border-radius: 5px;
+}
+.locked-object {
+       display: inline-block;
+        width:100%;
+        text-align:center;
+        vertical-align:middle;
+        overflow:hidden;
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+}

@@ -21,12 +21,14 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     this.setAllTeams();
+    this.getActivePageInLocalStorage();
     this.activePageSubscription = this.activePageService.activePage$.subscribe((pageChanged: any) => this.onActivePageChanged(pageChanged));
   }
   async setAllTeams() {
     this.teamService.setAllTeams();
   }
   onActivePageChanged(changedPage: string) {
+    this.setActivePageInLocalStorage(changedPage);
     this.activePage = changedPage;
     switch (changedPage) {
       case "stats":
@@ -38,7 +40,15 @@ export class AppComponent implements OnInit {
     }
 
   }
+  setActivePageInLocalStorage(changedPage: string) {
+    window.localStorage.setItem("activePage", changedPage);
+  }
+  getActivePageInLocalStorage() {
+    const activePage = window.localStorage.getItem("activePage");
+    if (activePage) {
+      this.activePageService.activePage$.next(activePage);
+    } else {
+      this.activePageService.activePage$.next("stats");
+    }
+  }
 }
-
-
-

@@ -10,7 +10,8 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root'
 })
 export class GamesService {
-  currentGame$: BehaviorSubject<Game> = new BehaviorSubject(new Game())
+  gameInSession$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
+  currentGame$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
   currentGameSubscription: Subscription = this.currentGame$.pipe(filter((value) => !!value.id)).subscribe(res => this.inningService.createNewActiveInning(res.id))
   constructor(private supabaseService: SupabaseService, private inningService: InningService, private messageService: MessageService) { }
   async createNewGame(teamId: number) {
@@ -46,5 +47,13 @@ export class GamesService {
     this.inningService.currentInning$.next(new Inning());
     this.messageService.add({ severity: 'success', summary: 'Game Complete' })
 
+  }
+  async getAnyActiveGameFromTeam(teamId: number) {
+    const { data, error } = await this.supabaseService.supabase
+      .from('games')
+      .select()
+      .eq("teamId", teamId)
+      .eq("active", true);
+    return data;
   }
 }

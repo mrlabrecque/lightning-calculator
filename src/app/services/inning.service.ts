@@ -13,6 +13,8 @@ import { SupabaseService } from './supabase.service';
 export class InningService {
   public positions: any[] = POSITIONS;
   currentInning$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning())
+    // Create a function to handle inserts
+
 
   constructor(private supabaseService: SupabaseService, private messageService:MessageService) { }
   async createNewActiveInning(gameId: number) {

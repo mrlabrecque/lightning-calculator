@@ -18,6 +18,7 @@ import { TeamsService } from '../services/teams.service';
 })
 export class LineupComponent {
   public positions: any[] = POSITIONS;
+  gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
   .pipe(filter((value) => !!value.id))
   .subscribe(res => this.currentGame = res)
@@ -42,6 +43,11 @@ export class LineupComponent {
     }];
   sortedInningPlayersByMaxBenched: any;
   constructor(private messageService: MessageService,private gameService: GamesService, private inningService: InningService, private rosterService: RosterService, private teamService: TeamsService) {
+    
+  }
+  ngOnInit() {
+    this.gameService.gameInSession$.pipe(filter((value) => value.id > -1)).subscribe(res => this.gameInSession = res);
+
   }
   async createNewGame() {
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
@@ -128,5 +134,8 @@ export class LineupComponent {
   }
   completeGame() {
     this.gameService.completeGame(this.currentGame?.id);
+  }
+  joinGame() {
+    console.log(this.gameInSession);
   }
 }

@@ -7,10 +7,19 @@
                     <app-team-selector></app-team-selector>
                 </div>
                 <div class="col-6">
-                    <p-button label="New Game"
-                              type="submit"
-                              [raised]="true"></p-button>
+                    <ng-container *ngIf="!!gameInSession">
+                        <p-button label="Join Game"
+                                  type="info"
+                                  [raised]="true"
+                                  (onClick)="joinGame()"></p-button>
+                    </ng-container>
+                    <ng-container *ngIf="!gameInSession">
+                        <p-button label="New Game"
+                                  type="submit"
+                                  [raised]="true"></p-button>
+                    </ng-container>
                 </div>
+                {{gameInSession | json}}
             </div>
         </form>
     </ng-container>

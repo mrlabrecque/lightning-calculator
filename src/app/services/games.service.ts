@@ -10,6 +10,7 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root'
 })
 export class GamesService {
+  isGameCreator$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   gameInSession$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
   currentGame$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
   currentGameSubscription: Subscription = this.currentGame$.pipe(filter((value) => !!value.id)).subscribe(res => this.inningService.createNewActiveInning(res.id))
@@ -17,6 +18,7 @@ export class GamesService {
   async createNewGame(teamId: number) {
     await this.setAnyActiveGameForCurrentTeamToInactive(teamId);
     await this.insertNewActiveGame(teamId);
+    this.isGameCreator$.next(true);
   }
   async insertNewActiveGame(teamId: number) {
     const { data, error } = await this.supabaseService.supabase

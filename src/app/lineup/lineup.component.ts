@@ -32,7 +32,9 @@ export class LineupComponent {
   currentInningPlayers: InningPlayer[] = [];
   currentGameRoster: Player[] = [];
   currentInningNumber$: BehaviorSubject<number> = new BehaviorSubject(1);
-
+  gameCreatorSubscription: Subscription = this.gameService.isGameCreator$
+  .subscribe(res => this.isGameCreator = res)
+  isGameCreator: boolean = false; 
   loading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   splitButtonList = [
     {

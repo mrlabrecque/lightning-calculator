@@ -134,8 +134,23 @@ export class LineupComponent {
   }
   completeGame() {
     this.gameService.completeGame(this.currentGame?.id);
+    const gameToRemove = window.localStorage.getItem("GameInProgress");
+    if (gameToRemove) {
+      window.localStorage.removeItem(gameToRemove);
+    }
   }
-  joinGame() {
-    console.log(this.gameInSession);
+  async joinGame() {
+    window.localStorage.setItem("GameInProgress", JSON.stringify(this.gameInSession));
+    this.currentGame = <Game>this.gameInSession;
+    const currentActiveInning: Inning = await this.inningService.getCurrentActiveInning(this.currentGame.id);
+    const currentActiveInningPlayers: InningPlayer[] = await this.inningService.getCurrentActiveInningPlayers(currentActiveInning.id);
+    console.log(currentActiveInning);
+    if (currentActiveInning) {
+      const currentRoster = this.rosterService.getAllTeamPlayers();
+      this.currentGameRoster = [...currentRoster];
+      this.currentInningPlayers = [...currentActiveInningPlayers];
+      this.addAnyBenchPositionsNeeded()
+      this.inningService.currentInning$.next(currentActiveInning);
+    }
   }
 }

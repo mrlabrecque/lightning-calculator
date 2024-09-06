@@ -44,6 +44,18 @@ export class InningService {
       return 1;
     }
   }
+  async getCurrentActiveInning(gameId: number) {
+      const { data, error } = await this.supabaseService.supabase
+      .from('innings')
+      .select()
+      .eq('gameId', gameId)
+        .eq('active', true)
+      if (data && data?.length > 0) {
+        return <Inning>data[0];
+      } else {
+        return new Inning();
+    }
+  }
   async setAllOtherInningsInactive(gameId: number) {
     const { error } = await this.supabaseService.supabase
       .from('innings')
@@ -66,6 +78,17 @@ export class InningService {
       .from('inningPlayers')
       .insert(inningPlayersToAdd)
       .select();
+  }
+    async getCurrentActiveInningPlayers(inningId: number) {
+      const { data, error } = await this.supabaseService.supabase
+      .from('inningPlayers')
+      .select()
+      .eq('inningId', inningId)
+      if (data && data?.length > 0) {
+        return <InningPlayer[]>data;
+      } else {
+          return [new InningPlayer()]
+    }
   }
   async getBenchNumberPlayer(gameId: number, players: Player[]) {
     const playerIds = players.map(player => player.id);

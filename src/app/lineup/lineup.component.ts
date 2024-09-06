@@ -53,7 +53,7 @@ export class LineupComponent {
   }
   ngOnInit() {
     this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
-    this.checkIfGameInProgressAndAmITheCreator()
+   // this.checkIfGameInProgressAndAmITheCreator()
   }
   async createNewGame() {
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
@@ -160,6 +160,7 @@ export class LineupComponent {
       this.currentInningPlayers = [...currentActiveInningPlayers];
       this.addAnyBenchPositionsNeeded()
       this.inningService.currentInning$.next(currentActiveInning);
+      this.setPositionsOnPlayers()
     }
   }
   checkIfGameInProgressAndAmITheCreator() {

@@ -1,5 +1,5 @@
 export class Inning {
-    id: number = 0;
+    id: number = -1;
     gameId?: number;
     active?: boolean;
     inningNumber: number = 1;

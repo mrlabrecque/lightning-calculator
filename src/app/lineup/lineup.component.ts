@@ -20,10 +20,10 @@ export class LineupComponent {
   public positions: any[] = POSITIONS;
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
-  .pipe(filter((value) => !!value.id))
+  .pipe(filter((value) => value.id > -1))
     .subscribe(res => {
       this.currentGame = res
-      window.localStorage.setItem("GameCreator", `{GameId:${res.id}`)
+      window.localStorage.setItem("GameCreator", `{GameId:${res.id}}`)
       window.localStorage.setItem("GameInProgress", JSON.stringify(res));
     })
   currentGame: Game = new Game(); 

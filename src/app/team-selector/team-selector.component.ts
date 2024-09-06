@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Game } from '../models/game';
 import { Team } from '../models/team';
 import { GamesService } from '../services/games.service';
 import { TeamsService } from '../services/teams.service';
@@ -23,6 +24,7 @@ export class TeamSelectorComponent {
   
   }
   checkForActiveGameComplete(res: any) {
+    this.gameService.gameInSession$.next(new Game());
     if (res.length > 0) {
           this.gameService.gameInSession$.next(res[res.length - 1]);
     }

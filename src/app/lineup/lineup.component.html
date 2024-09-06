@@ -19,7 +19,6 @@
                                   [raised]="true"></p-button>
                     </ng-container>
                 </div>
-                {{gameInSession | json}}
             </div>
         </form>
     </ng-container>
@@ -49,7 +48,7 @@
                             <div class="lineup">
                                 <p-orderList [value]="currentInningPlayers"
                                              header="Players"
-                                             [dragdrop]="!currentInning.submitted"
+                                             [dragdrop]="!currentInning.submitted && isGameCreator"
                                              [stripedRows]="true">
                                     <ng-template let-inningPlayer
                                                  let-i="index"

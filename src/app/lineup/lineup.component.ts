@@ -32,6 +32,7 @@ export class LineupComponent {
   currentGameRoster: Player[] = [];
   currentInningNumber$: BehaviorSubject<number> = new BehaviorSubject(1);
 
+  loading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   splitButtonList = [
     {
       label: 'Complete Game',
@@ -80,6 +81,7 @@ export class LineupComponent {
     this.currentInningPlayers = [...tempInningPlayers];
     this.currentInningNumber$.next(this.currentInning.inningNumber);
     this.updateMostBenchedPlayers();
+    this.loading$.next(false);
   }
   private addAnyBenchPositionsNeeded() {
     if (this.currentGameRoster.length > 10) {

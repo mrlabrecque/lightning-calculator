@@ -21,7 +21,11 @@ export class LineupComponent {
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
   .pipe(filter((value) => !!value.id))
-  .subscribe(res => this.currentGame = res)
+    .subscribe(res => {
+      this.currentGame = res
+      window.localStorage.setItem("GameCreator", `{GameId:${res.id}`)
+      window.localStorage.setItem("GameInProgress", JSON.stringify(res));
+    })
   currentGame: Game = new Game(); 
   currentInningSubscription: Subscription = this.inningService.currentInning$
     .pipe(filter((value) => !!value.id))
@@ -49,7 +53,7 @@ export class LineupComponent {
   }
   ngOnInit() {
     this.gameService.gameInSession$.pipe(filter((value) => value.id > -1)).subscribe(res => this.gameInSession = res);
-
+    this.checkIfGameInProgressAndAmITheCreator()
   }
   async createNewGame() {
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
@@ -137,8 +141,12 @@ export class LineupComponent {
   completeGame() {
     this.gameService.completeGame(this.currentGame?.id);
     const gameToRemove = window.localStorage.getItem("GameInProgress");
+     const gameCreatorToRemove = window.localStorage.getItem("GameCreator");
     if (gameToRemove) {
       window.localStorage.removeItem(gameToRemove);
+    }
+    if (gameCreatorToRemove) {
+       window.localStorage.removeItem(gameCreatorToRemove);
     }
   }
   async joinGame() {
@@ -146,13 +154,23 @@ export class LineupComponent {
     this.currentGame = <Game>this.gameInSession;
     const currentActiveInning: Inning = await this.inningService.getCurrentActiveInning(this.currentGame.id);
     const currentActiveInningPlayers: InningPlayer[] = await this.inningService.getCurrentActiveInningPlayers(currentActiveInning.id);
-    console.log(currentActiveInning);
     if (currentActiveInning) {
       const currentRoster = this.rosterService.getAllTeamPlayers();
       this.currentGameRoster = [...currentRoster];
       this.currentInningPlayers = [...currentActiveInningPlayers];
       this.addAnyBenchPositionsNeeded()
       this.inningService.currentInning$.next(currentActiveInning);
+    }
+  }
+  checkIfGameInProgressAndAmITheCreator() {
+    const gameInProgress = window.localStorage.getItem("GameInProgress");
+    const amGameCreator = window.localStorage.getItem("GameCreator");
+    if (amGameCreator) {
+      this.gameService.isGameCreator$.next(true);
+    }
+    if (gameInProgress) {
+      this.gameInSession = JSON.parse(gameInProgress);
+      this.joinGame();
     }
   }
 }

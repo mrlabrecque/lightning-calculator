@@ -19,6 +19,7 @@ export class GamesService {
     await this.setAnyActiveGameForCurrentTeamToInactive(teamId);
     await this.insertNewActiveGame(teamId);
     this.isGameCreator$.next(true);
+
   }
   async insertNewActiveGame(teamId: number) {
     const { data, error } = await this.supabaseService.supabase

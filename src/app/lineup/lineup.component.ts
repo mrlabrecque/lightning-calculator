@@ -52,7 +52,7 @@ export class LineupComponent {
     
   }
   ngOnInit() {
-    this.gameService.gameInSession$.pipe(filter((value) => value.id > -1)).subscribe(res => this.gameInSession = res);
+    this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
     this.checkIfGameInProgressAndAmITheCreator()
   }
   async createNewGame() {

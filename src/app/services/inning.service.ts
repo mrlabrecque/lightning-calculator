@@ -44,12 +44,22 @@ export class InningService {
       return 1;
     }
   }
-  async getCurrentActiveInning(gameId: number) {
+  async getCurrentActiveInningId(gameId: number) {
+      const { data, error } = await this.supabaseService.supabase
+      .from('inningPlayers')
+      .select('inningId')
+      .eq('gameId', gameId)
+      if (data && data?.length > 0) {
+        return Math.max(...data.map(o => o.inningId));
+      } else {
+        return -1;
+    }
+  }
+    async getInningById(inningId: number) {
       const { data, error } = await this.supabaseService.supabase
       .from('innings')
       .select()
-      .eq('gameId', gameId)
-        .eq('active', true)
+      .eq('id', inningId)
       if (data && data?.length > 0) {
         return <Inning>data[0];
       } else {

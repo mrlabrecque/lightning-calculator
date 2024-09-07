@@ -23,12 +23,10 @@ export class LineupComponent {
   .pipe(filter((value) => value.id > -1))
     .subscribe(res => {
       this.currentGame = res
-      window.localStorage.setItem("GameCreator", `{GameId:${res.id}}`)
-      window.localStorage.setItem("GameInProgress", JSON.stringify(res));
     })
   currentGame: Game = new Game(); 
   currentInningSubscription: Subscription = this.inningService.currentInning$
-    .pipe(filter((value) => !!value.id))
+    .pipe(filter((value) => value.id > -1))
     .subscribe(res => this.onCurrentInningChanged(res))
   currentInning: Inning = new Inning(); 
 
@@ -53,12 +51,14 @@ export class LineupComponent {
   }
   ngOnInit() {
     this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
-   // this.checkIfGameInProgressAndAmITheCreator()
+    this.checkIfGameInProgressAndAmITheCreator()
   }
   async createNewGame() {
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
     this.currentGameRoster = this.rosterService.getAllTeamPlayers();
     this.addAnyBenchPositionsNeeded();
+    window.localStorage.setItem("GameCreator", `{GameId:${this.currentGame.id}}`)
+    window.localStorage.setItem("GameInProgress", JSON.stringify(this.currentGame));
   }
   onCurrentInningChanged(inning: Inning) {
     this.currentInning = inning;
@@ -152,15 +152,17 @@ export class LineupComponent {
   async joinGame() {
     window.localStorage.setItem("GameInProgress", JSON.stringify(this.gameInSession));
     this.currentGame = <Game>this.gameInSession;
-    const currentActiveInning: Inning = await this.inningService.getCurrentActiveInning(this.currentGame.id);
-    const currentActiveInningPlayers: InningPlayer[] = await this.inningService.getCurrentActiveInningPlayers(currentActiveInning.id);
-    if (currentActiveInning) {
+    this.rosterService.setSelectedRoster(this.currentGame.teamId)
+    const currentActiveInningId: any = await this.inningService.getCurrentActiveInningId(this.currentGame.id);
+    const currentActiveInning: any = await this.inningService.getInningById(currentActiveInningId);
+    const currentActiveInningPlayers: InningPlayer[] = await this.inningService.getCurrentActiveInningPlayers(currentActiveInningId);
+    if (currentActiveInningId) {
       const currentRoster = this.rosterService.getAllTeamPlayers();
+      this.currentInning = currentActiveInning;
       this.currentGameRoster = [...currentRoster];
       this.currentInningPlayers = [...currentActiveInningPlayers];
-      this.addAnyBenchPositionsNeeded()
-      this.inningService.currentInning$.next(currentActiveInning);
-      this.setPositionsOnPlayers()
+      this.createInningPlayers()
+      this.addAnyBenchPositionsNeeded();
     }
   }
   checkIfGameInProgressAndAmITheCreator() {

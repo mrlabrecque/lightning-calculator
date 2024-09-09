@@ -46,11 +46,12 @@ export class InningService {
   }
   async getCurrentActiveInningId(gameId: number) {
       const { data, error } = await this.supabaseService.supabase
-      .from('inningPlayers')
-      .select('inningId')
+      .from('innings')
+      .select('id')
       .eq('gameId', gameId)
+      .eq('active', true)
       if (data && data?.length > 0) {
-        return Math.max(...data.map(o => o.inningId));
+        return data[0].id;
       } else {
         return -1;
     }
@@ -71,7 +72,6 @@ export class InningService {
       .from('innings')
       .update({ active: false })
       .eq("gameId", gameId);
-    this.currentInning$.next(new Inning());
   }
   async insertInningPlayers(inningPlayers: InningPlayer[], positions: any) {
     const inningPlayersToAdd: any[] = [];

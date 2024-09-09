@@ -18,11 +18,13 @@ import { TeamsService } from '../services/teams.service';
 })
 export class LineupComponent {
   public positions: any[] = POSITIONS;
+  gameInSessionSubscription: Subscription = this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
-  .pipe(filter((value) => value.id > -1))
+    .pipe(filter(value => value.id > -1))
     .subscribe(res => {
       this.currentGame = res
+
     })
   currentGame: Game = new Game(); 
   currentInningSubscription: Subscription = this.inningService.currentInning$
@@ -50,28 +52,25 @@ export class LineupComponent {
     
   }
   ngOnInit() {
-    this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
-    this.checkIfGameInProgressAndAmITheCreator()
+    this.checkIfGameInSessionAndAmITheCreator()
   }
   async createNewGame() {
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
     this.currentGameRoster = this.rosterService.getAllTeamPlayers();
     this.addAnyBenchPositionsNeeded();
-    window.localStorage.setItem("GameCreator", `{GameId:${this.currentGame.id}}`)
-    window.localStorage.setItem("GameInProgress", JSON.stringify(this.currentGame));
   }
   onCurrentInningChanged(inning: Inning) {
     this.currentInning = inning;
     if (this.currentInning.id > 0) {
       this.currentInningNumber$.next(this.currentInning.inningNumber);
-          this.createInningPlayers();
+      this.createInningPlayers();
     }
   }
   async createInningPlayers() {
     const currentPlayers = [...this.currentGameRoster];
     const numberOfBenchedInGame = await this.inningService.getBenchNumberPlayer(this.currentGame.id ?? 1, currentPlayers)
     let tempInningPlayers: InningPlayer[] = [];
-    if (this.currentInning.inningNumber === 1) {
+    if (this.currentInning.inningNumber === 1 && !this.currentInning.submitted) {
       if (currentPlayers.length > 0) {
         currentPlayers.forEach(player => {
           const newInningPlayerObject: InningPlayer = {
@@ -87,7 +86,8 @@ export class LineupComponent {
     } else {
       tempInningPlayers = [...this.currentInningPlayers];
       tempInningPlayers.forEach(player => {
-        player.timesBenched = this.findBenchedRecords(player.playerId,numberOfBenchedInGame)
+        player.timesBenched = this.findBenchedRecords(player.playerId, numberOfBenchedInGame)
+        player.inning = this.currentInning;
       })
     }
     this.currentInningPlayers = [...tempInningPlayers];
@@ -138,19 +138,26 @@ export class LineupComponent {
     const benchedTimes = benchedRecords?.filter((rec:any) => rec.playerId === playerId)
     return benchedTimes?.length ?? 0
   }
-  completeGame() {
+   async completeGame() {
+    this.loading$.next(true);
+    this.removeLocalStorage();
+    this.gameService.gameInSession$.next(new Game());
     this.gameService.completeGame(this.currentGame?.id);
-    const gameToRemove = window.localStorage.getItem("GameInProgress");
-     const gameCreatorToRemove = window.localStorage.getItem("GameCreator");
+    this.loading$.next(false);
+  }
+  private removeLocalStorage() {
+    const gameToRemove = window.localStorage.getItem("GameInSession");
+    const gameCreatorToRemove = window.localStorage.getItem("GameCreator");
     if (gameToRemove) {
-      window.localStorage.removeItem(gameToRemove);
+      window.localStorage.removeItem('GameInSession');
     }
     if (gameCreatorToRemove) {
-       window.localStorage.removeItem(gameCreatorToRemove);
+      window.localStorage.removeItem('GameCreator');
     }
   }
+
   async joinGame() {
-    window.localStorage.setItem("GameInProgress", JSON.stringify(this.gameInSession));
+    window.localStorage.setItem("GameInSession", JSON.stringify(this.gameInSession));
     this.currentGame = <Game>this.gameInSession;
     this.rosterService.setSelectedRoster(this.currentGame.teamId)
     const currentActiveInningId: any = await this.inningService.getCurrentActiveInningId(this.currentGame.id);
@@ -160,20 +167,27 @@ export class LineupComponent {
       const currentRoster = this.rosterService.getAllTeamPlayers();
       this.currentInning = currentActiveInning;
       this.currentGameRoster = [...currentRoster];
-      this.currentInningPlayers = [...currentActiveInningPlayers];
+      this.currentInningPlayers = this.mapServerInningPlayerToLocalInningPlayer(currentActiveInningPlayers);
       this.createInningPlayers()
       this.addAnyBenchPositionsNeeded();
     }
   }
-  checkIfGameInProgressAndAmITheCreator() {
-    const gameInProgress = window.localStorage.getItem("GameInProgress");
+  checkIfGameInSessionAndAmITheCreator() {
+    const gameInSession = window.localStorage.getItem("GameInSession");
     const amGameCreator = window.localStorage.getItem("GameCreator");
     if (amGameCreator) {
       this.gameService.isGameCreator$.next(true);
     }
-    if (gameInProgress) {
-      this.gameInSession = JSON.parse(gameInProgress);
+    if (gameInSession) {
+      this.gameService.gameInSession$.next(JSON.parse(gameInSession));
       this.joinGame();
     }
+  }
+  mapServerInningPlayerToLocalInningPlayer(inningPlayersFromServer: InningPlayer[]) {
+    inningPlayersFromServer.forEach((ipFromServer: InningPlayer) => {
+      ipFromServer.inning = this.currentInning;
+      ipFromServer.playerName = this.currentGameRoster.find(player => player.id === ipFromServer.playerId)?.Name
+    });
+    return inningPlayersFromServer;
   }
 }

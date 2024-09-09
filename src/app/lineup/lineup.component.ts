@@ -21,14 +21,14 @@ export class LineupComponent {
   gameInSessionSubscription: Subscription = this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
-    .pipe(filter(value => value.id > -1))
+    .pipe(filter(value => !!value.id))
     .subscribe(res => {
       this.currentGame = res
 
     })
   currentGame: Game = new Game(); 
   currentInningSubscription: Subscription = this.inningService.currentInning$
-    .pipe(filter((value) => value.id > -1))
+    .pipe(filter((value) => !!value.id))
     .subscribe(res => this.onCurrentInningChanged(res))
   currentInning: Inning = new Inning(); 
 
@@ -55,6 +55,7 @@ export class LineupComponent {
     this.checkIfGameInSessionAndAmITheCreator()
   }
   async createNewGame() {
+    this.loading$.next(true);
     await this.gameService.createNewGame(this.teamService.getCurrentTeamId());
     this.currentGameRoster = this.rosterService.getAllTeamPlayers();
     this.addAnyBenchPositionsNeeded();
@@ -140,7 +141,8 @@ export class LineupComponent {
   }
    async completeGame() {
     this.loading$.next(true);
-    this.removeLocalStorage();
+     this.removeLocalStorage();
+    this.sortedInningPlayersByMaxBenched = [];
     this.gameService.gameInSession$.next(new Game());
     this.gameService.completeGame(this.currentGame?.id);
     this.loading$.next(false);

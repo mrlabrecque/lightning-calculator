@@ -21,6 +21,9 @@
                 </div>
             </div>
         </form>
+        <ng-container *ngIf="!!gameInSession">
+            <p-card>Join Game in Process</p-card>
+        </ng-container>
     </ng-container>
     <ng-container *ngIf="currentGame.id > -1">
         <p-card [header]="'Inning ' + currentInning.inningNumber">
@@ -106,9 +109,6 @@
             </ng-container>
 
         </p-card>
-    </ng-container>
-    <ng-container *ngIf="!!gameInSession">
-        <p-card>Join Game in Process</p-card>
     </ng-container>
 </div>
 <p-toast />

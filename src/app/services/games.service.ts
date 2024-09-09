@@ -13,7 +13,7 @@ export class GamesService {
   isGameCreator$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   gameInSession$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
   currentGame$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
-  currentGameSubscription: Subscription = this.currentGame$.pipe(filter((value) => value.id > -1)).subscribe(res => this.inningService.createNewActiveInning(res.id))
+  currentGameSubscription: Subscription = this.currentGame$.pipe(filter((value) => !!value.id)).subscribe(res => this.inningService.createNewActiveInning(res.id))
   constructor(private supabaseService: SupabaseService, private inningService: InningService, private messageService: MessageService) { }
   async createNewGame(teamId: number) {
     await this.setAnyActiveGameForCurrentTeamToInactive(teamId);

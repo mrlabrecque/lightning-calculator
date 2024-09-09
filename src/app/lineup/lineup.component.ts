@@ -18,6 +18,9 @@ import { TeamsService } from '../services/teams.service';
 })
 export class LineupComponent {
   public positions: any[] = POSITIONS;
+  newInningPlayerInsertedSubscription: Subscription = this.inningService.newInningPlayerInserted$
+     .pipe(filter((value) => value?.id > -1))
+    .subscribe(res => this.newInningPlayerInserted(res))
   gameInSessionSubscription: Subscription = this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
@@ -75,6 +78,7 @@ export class LineupComponent {
       if (currentPlayers.length > 0) {
         currentPlayers.forEach(player => {
           const newInningPlayerObject: InningPlayer = {
+            id: -1,
             inning: this.currentInning,
             playerName: player.Name,
             playerId: player.id,
@@ -181,8 +185,14 @@ export class LineupComponent {
       this.gameService.isGameCreator$.next(true);
     }
     if (gameInSession) {
-      this.gameService.gameInSession$.next(JSON.parse(gameInSession));
-      this.joinGame();
+      this.gameService.getAnyActiveGameFromTeam(this.teamService.getCurrentTeamId()).then(res => {
+      if (res?.length) {
+        this.gameService.gameInSession$.next(JSON.parse(gameInSession));
+        this.joinGame();
+      } else {
+        this.removeLocalStorage();
+      }
+      }) 
     }
   }
   mapServerInningPlayerToLocalInningPlayer(inningPlayersFromServer: InningPlayer[]) {
@@ -191,5 +201,22 @@ export class LineupComponent {
       ipFromServer.playerName = this.currentGameRoster.find(player => player.id === ipFromServer.playerId)?.Name
     });
     return inningPlayersFromServer;
+  }
+  newInningPlayerInserted(inningPlayer: InningPlayer = new InningPlayer()) {
+    const currentInningId = this.currentInning?.id;
+    if (!this.isGameCreator) {
+      this.currentInningPlayers = [];
+      const inningPlayerInningId = inningPlayer.inning.id;
+      if (inningPlayerInningId === currentInningId) {
+        while (this.currentInningPlayers.length < this.currentGameRoster.length) {
+            this.currentInningPlayers.push(inningPlayer);
+        }
+        if (this.currentInningPlayers.length === this.currentGameRoster.length) {
+            this.currentInningPlayers = this.mapServerInningPlayerToLocalInningPlayer(this.currentInningPlayers);
+            this.createInningPlayers()
+            this.addAnyBenchPositionsNeeded();
+        }
+      }
+    }
   }
 }

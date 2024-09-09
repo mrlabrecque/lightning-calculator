@@ -14,9 +14,16 @@ export class InningService {
   public positions: any[] = POSITIONS;
   currentInning$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning())
     // Create a function to handle inserts
+  newInningPlayerInserted$: BehaviorSubject<InningPlayer> = new BehaviorSubject(new InningPlayer());
 
-
-  constructor(private supabaseService: SupabaseService, private messageService:MessageService) { }
+  constructor(private supabaseService: SupabaseService, private messageService: MessageService) { 
+    this.supabaseService.supabase
+      .channel('table_db_changes')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inningPlayers' },
+        (payload) => this.newInningPlayerInserted$.next(<InningPlayer>payload.new)
+      )
+      .subscribe()
+  }
   async createNewActiveInning(gameId: number) {
     await this.setAllOtherInningsInactive(gameId);
     const nextInningNumber = await this.getNextInningNumber(gameId);
@@ -109,5 +116,8 @@ export class InningService {
       .in('playerId', playerIds)
       .eq('position', 'B')
        return data;
+  }
+  newInningPlayerInserted(inningPlayer: InningPlayer) {
+    this.newInningPlayerInserted$.next(inningPlayer);
   }
 }

@@ -13,11 +13,5 @@ export class SupabaseService {
 
   constructor() { 
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
-      this.supabase
-      .channel('table_db_changes')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inningPlayers' },
-        (payload) => console.log('Change received!', payload)
-      )
-      .subscribe()
   }
 }

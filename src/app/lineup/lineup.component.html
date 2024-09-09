@@ -7,12 +7,6 @@
                     <app-team-selector></app-team-selector>
                 </div>
                 <div class="col-6">
-                    <ng-container *ngIf="!!gameInSession">
-                        <p-button label="Join Game"
-                                  type="info"
-                                  [raised]="true"
-                                  (onClick)="joinGame()"></p-button>
-                    </ng-container>
                     <ng-container *ngIf="!gameInSession">
                         <p-button label="New Game"
                                   type="submit"
@@ -21,9 +15,6 @@
                 </div>
             </div>
         </form>
-        <ng-container *ngIf="!!gameInSession">
-            <p-card>Join Game in Process</p-card>
-        </ng-container>
     </ng-container>
     <ng-container *ngIf="currentGame.id > -1">
         <p-card [header]="'Inning ' + currentInning.inningNumber">
@@ -74,6 +65,15 @@
                                         </div>
                                     </div>
                                 </ng-container>
+                                <ng-container *ngIf="currentInningPlayers.length == 1 && !isGameCreator">
+                                    <div class="locked-overlay">
+                                        <div class="locked-object"><i class="pi pi-lock"
+                                               style="font-size: 2.5rem">
+                                            </i>
+                                            <p>Inning needs confirmed by coach</p>
+                                        </div>
+                                    </div>
+                                </ng-container>
                             </div>
                             <div class="flex justify-content-end mt-2"
                                  *ngIf="isGameCreator">
@@ -111,4 +111,24 @@
         </p-card>
     </ng-container>
 </div>
+<ng-container *ngIf="!!gameInSession && currentGame.id == -1">
+    <div class="shadow-4 m-3 p-4">
+        <div class="flex justify-content-between align-items-center">
+            <div class="flex">
+                <p-badge value="live"
+                         [badgeSize]="'xlarge'"
+                         severity="success" />
+                <span class="pl-2">
+                    <h2 style="display: inline;">Game in Progress</h2>
+                </span>
+            </div>
+            <span>
+                <p-button label="Join"
+                          type="info"
+                          [raised]="true"
+                          (onClick)="joinGame()"></p-button>
+            </span>
+        </div>
+    </div>
+</ng-container>
 <p-toast />

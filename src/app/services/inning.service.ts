@@ -14,13 +14,13 @@ export class InningService {
   public positions: any[] = POSITIONS;
   currentInning$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning())
     // Create a function to handle inserts
-  newInningPlayerInserted$: BehaviorSubject<InningPlayer> = new BehaviorSubject(new InningPlayer());
+  newInningInserted$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning());
 
   constructor(private supabaseService: SupabaseService, private messageService: MessageService) { 
     this.supabaseService.supabase
       .channel('table_db_changes')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inningPlayers' },
-        (payload) => this.newInningPlayerInserted$.next(<InningPlayer>payload.new)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'innings' },
+        (payload) => this.newInningInserted(<Inning>payload.new)
       )
       .subscribe()
   }
@@ -133,7 +133,7 @@ export class InningService {
       .eq('position', 'B')
        return data;
   }
-  newInningPlayerInserted(inningPlayer: InningPlayer) {
-    this.newInningPlayerInserted$.next(inningPlayer);
+  newInningInserted(inning: Inning) {
+    this.currentInning$.next(inning);
   }
 }

@@ -18,9 +18,9 @@ import { TeamsService } from '../services/teams.service';
 })
 export class LineupComponent {
   public positions: any[] = POSITIONS;
-  newInningPlayerInsertedSubscription: Subscription = this.inningService.newInningPlayerInserted$
-     .pipe(filter((value) => value?.id > -1))
-    .subscribe(res => this.newInningPlayerInserted(res))
+  // newInningInsertedSubscription: Subscription = this.inningService.newInningInserted$
+  //    .pipe(filter((value) => value?.id > -1))
+  //   .subscribe(res => this.newInningInserted(res))
   gameInSessionSubscription: Subscription = this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
@@ -177,16 +177,26 @@ export class LineupComponent {
   }
   checkIfGameInSessionAndAmITheCreator() {
     const isThereGameInSession = window.localStorage.getItem("GameInSession");
-    let gameInSessionId = isThereGameInSession ? JSON.parse(isThereGameInSession).id : -1;
-    if (gameInSessionId > -1) {
-        this.gameService.setCurrentGameById(gameInSessionId).then(
-        () => {
-          const amGameCreator = window.localStorage.getItem("GameCreator");
-          if (amGameCreator) {
-            this.gameService.isGameCreator$.next(true);
+    if (isThereGameInSession) {
+      let gameInSessionId = JSON.parse(isThereGameInSession).id;
+      let teamId = JSON.parse(isThereGameInSession).teamId;
+      this.gameService.getAnyActiveGameFromTeam(teamId).then(
+        () => { 
+          this.gameService.setCurrentGameById(gameInSessionId).then(
+            () => {
+              const amGameCreator = window.localStorage.getItem("GameCreator");
+              if (amGameCreator) {
+                this.gameService.isGameCreator$.next(true);
+              }
+              this.joinGame();
+            })
           }
-          this.joinGame();
-        })
+      ).catch(
+        () => {
+          this.removeLocalStorage();
+          this.currentGame = new Game();
+         }
+      )
     }
   }
   mapServerInningPlayerToLocalInningPlayer(inningPlayersFromServer: InningPlayer[]) {
@@ -196,7 +206,8 @@ export class LineupComponent {
     });
     return inningPlayersFromServer;
   }
-  async newInningPlayerInserted(inningPlayer: InningPlayer = new InningPlayer()) {
+  async newInningInserted(inning: Inning = new Inning()) {
+    this.inningService.currentInning$.next(inning);
     // const currentInningId = this.currentInning.id;
     // if (!this.isGameCreator) {
     //   this.currentInningPlayers = [];

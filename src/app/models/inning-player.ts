@@ -2,7 +2,8 @@ import { Inning } from "./inning";
 
 export class InningPlayer {
     id: number = -1;
-    inning: Inning = new Inning();
+    inning?: Inning = new Inning();
+    inningId?: number;
     playerName?: string;
     playerId?: number;
     position?: string;

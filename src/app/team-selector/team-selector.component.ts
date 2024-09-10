@@ -27,6 +27,7 @@ export class TeamSelectorComponent {
     this.gameService.gameInSession$.next(new Game());
     if (res.length > 0) {
       this.gameService.gameInSession$.next(res[res.length - 1]);
+      window.localStorage.setItem("GameInSession", JSON.stringify(res[res.length - 1]));
     }
     this.teamService.setCurrentTeam(this.selectedTeam.id);
   }

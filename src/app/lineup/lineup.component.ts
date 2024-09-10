@@ -200,6 +200,7 @@ export class LineupComponent {
         () => {
           this.removeLocalStorage();
           this.currentGame = new Game();
+          this.loading$.next(false);
          }
       )
     }
@@ -212,26 +213,8 @@ export class LineupComponent {
     return inningPlayersFromServer;
   }
   async newInningInserted(inning: Inning = new Inning()) {
-    this.joinGame();
-    // const currentInningId = this.currentInning.id;
-    // if (!this.isGameCreator) {
-    //   this.currentInningPlayers = [];
-    //   const inningPlayerInningId = inningPlayer.inningId || currentInningId;
-    //   if (inningPlayerInningId !== currentInningId) {
-    //     await this.inningService.getInningById(inningPlayerInningId).then(res =>
-    //       this.currentInning = res
-    //      );
-    //   }
-    //   if (inningPlayerInningId === currentInningId) {
-    //     while (this.currentInningPlayers.length < this.currentGameRoster.length) {
-    //         this.currentInningPlayers.push(inningPlayer);
-    //     }
-    //     if (this.currentInningPlayers.length === this.currentGameRoster.length) {
-    //         this.currentInningPlayers = this.mapServerInningPlayerToLocalInningPlayer(this.currentInningPlayers);
-    //         this.createInningPlayers()
-    //         this.addAnyBenchPositionsNeeded();
-    //     }
-    //   }
-    // }
+    if (this.currentGame.id > -1) {
+      this.joinGame();
+    }
   }
 }

@@ -19,7 +19,7 @@ export class InningService {
   constructor(private supabaseService: SupabaseService, private messageService: MessageService) { 
     this.supabaseService.supabase
       .channel('table_db_changes')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'innings' },
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'innings' },
         (payload) => this.newInningInserted(<Inning>payload.new)
       )
       .subscribe()
@@ -132,6 +132,12 @@ export class InningService {
       .in('playerId', playerIds)
       .eq('position', 'B')
        return data;
+  }
+  async updateInningToSubmitted(inning: Inning) {
+       const { data, error } = await this.supabaseService.supabase
+        .from('innings')
+        .update({submitted: true})
+        .eq('id', inning.id);
   }
   newInningInserted(inning: Inning) {
     const isGameCreator = window.localStorage.getItem("GameCreator");

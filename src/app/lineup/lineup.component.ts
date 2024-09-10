@@ -132,6 +132,7 @@ export class LineupComponent {
   submitInning() {
     if (this.currentInning) {
       this.currentInning.submitted = true;
+      this.inningService.updateInningToSubmitted(this.currentInning);
     }
     this.setPositionsOnPlayers();
     this.inningService.updateInningPlayers(this.currentInningPlayers, this.positions).then(

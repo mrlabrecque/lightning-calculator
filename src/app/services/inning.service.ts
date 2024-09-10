@@ -14,7 +14,7 @@ export class InningService {
   public positions: any[] = POSITIONS;
   currentInning$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning())
     // Create a function to handle inserts
-  newInningInserted$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning());
+  nextInningForViewerClicked$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning());
 
   constructor(private supabaseService: SupabaseService, private messageService: MessageService) { 
     this.supabaseService.supabase
@@ -134,6 +134,9 @@ export class InningService {
        return data;
   }
   newInningInserted(inning: Inning) {
-    this.currentInning$.next(inning);
+    const isGameCreator = window.localStorage.getItem("GameCreator");
+    if (!isGameCreator) {
+        this.nextInningForViewerClicked$.next(inning);
+    }
   }
 }

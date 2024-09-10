@@ -18,9 +18,9 @@ import { TeamsService } from '../services/teams.service';
 })
 export class LineupComponent {
   public positions: any[] = POSITIONS;
-  // newInningInsertedSubscription: Subscription = this.inningService.newInningInserted$
-  //    .pipe(filter((value) => value?.id > -1))
-  //   .subscribe(res => this.newInningInserted(res))
+  newInningInsertedSubscription: Subscription = this.inningService.nextInningForViewerClicked$
+     .pipe(filter((value) => value?.id > -1))
+    .subscribe(res => this.newInningInserted(res))
   gameInSessionSubscription: Subscription = this.gameService.gameInSession$.subscribe(res => this.gameInSession = res.id > -1 ?  res : null);
   gameInSession: Game | null = null;
   currentGameSubscription: Subscription = this.gameService.currentGame$
@@ -82,9 +82,14 @@ export class LineupComponent {
     }
     this.currentInningPlayers = [...tempInningPlayers];
     this.updateMostBenchedPlayers();
-    this.inningService.insertInningPlayers(this.currentInningPlayers, this.positions).then(
+    if (this.isGameCreator) {
+         this.inningService.insertInningPlayers(this.currentInningPlayers, this.positions).then(
       () => this.loading$.next(false)
     );
+    } else {
+      this.loading$.next(false)
+    }
+ 
   }
   private createTempInningPlayersForNewGame(currentPlayers: Player[], numberOfBenchedInGame: any[] | null, tempInningPlayers: InningPlayer[]) {
     if (currentPlayers.length > 0) {
@@ -207,7 +212,7 @@ export class LineupComponent {
     return inningPlayersFromServer;
   }
   async newInningInserted(inning: Inning = new Inning()) {
-    this.inningService.currentInning$.next(inning);
+    this.joinGame();
     // const currentInningId = this.currentInning.id;
     // if (!this.isGameCreator) {
     //   this.currentInningPlayers = [];

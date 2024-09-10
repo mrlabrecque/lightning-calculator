@@ -1,5 +1,5 @@
 <div class="shadow-4 m-3">
-    <ng-container *ngIf="currentGame.id == -1">
+    <ng-container *ngIf="currentGame.id === -1">
         <form #statForm="ngForm"
               (ngSubmit)="createNewGame()">
             <div class="formgrid grid p-4 flex align-items-end">
@@ -126,7 +126,7 @@
                 <p-button label="Join"
                           type="info"
                           [raised]="true"
-                          (onClick)="joinGame()"></p-button>
+                          (onClick)="checkIfGameInSessionAndAmITheCreator()"></p-button>
             </span>
         </div>
     </div>

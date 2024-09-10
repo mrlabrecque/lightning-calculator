@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, Subscription, filter } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Game } from '../models/game';
 import { Inning } from '../models/inning';
 import { InningService } from './inning.service';
@@ -13,7 +13,6 @@ export class GamesService {
   isGameCreator$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   gameInSession$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
   currentGame$: BehaviorSubject<Game> = new BehaviorSubject(new Game());
-  currentGameSubscription: Subscription = this.currentGame$.pipe(filter((value) => !!value.id)).subscribe(res => this.inningService.createNewActiveInning(res.id))
   constructor(private supabaseService: SupabaseService, private inningService: InningService, private messageService: MessageService) { }
   async createNewGame(teamId: number) {
     await this.setAnyActiveGameForCurrentTeamToInactive(teamId);
@@ -27,10 +26,12 @@ export class GamesService {
       .insert({ teamId: teamId, active: true })
       .select();
     if (data && data?.length > 0) {
-      this.currentGame$.next(<Game>data[0]);
+      const newGame = <Game>data[0];
+      this.currentGame$.next(newGame);
       window.localStorage.setItem('GameCreator', JSON.stringify(data[0].id))
       window.localStorage.setItem('GameInSession', JSON.stringify(data[0]))
       this.isGameCreator$.next(true);
+      this.inningService.createNewActiveInning(newGame.id)
     }
   }
 
@@ -61,5 +62,15 @@ export class GamesService {
       .eq("teamId", teamId)
       .eq("active", true);
     return data;
+  }
+  async setCurrentGameById(gameId: number) {
+    const { data, error } = await this.supabaseService.supabase
+      .from('games')
+      .select()
+      .eq("id", gameId);
+    if (data && data?.length > 0) {
+      const newGame = <Game>data[0];
+      this.currentGame$.next(newGame);
+    }
   }
 }

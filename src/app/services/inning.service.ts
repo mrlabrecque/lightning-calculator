@@ -96,6 +96,22 @@ export class InningService {
       .insert(inningPlayersToAdd)
       .select();
   }
+  async updateInningPlayers(inningPlayers: InningPlayer[], positions: any) {
+    const inningPlayersToAdd: any[] = [];
+    inningPlayers.forEach(async (player: InningPlayer, i) => {
+      const tempPlayer = {
+        inningId: player?.inning?.id,
+        gameId: player?.inning?.gameId,
+        playerId: player?.playerId,
+        position: positions[i].value
+      }
+      const { data, error } = await this.supabaseService.supabase
+        .from('inningPlayers')
+        .update({position: tempPlayer.position})
+        .eq('inningId', tempPlayer.inningId)
+        .eq('playerId', tempPlayer.playerId)
+      });
+  }
     async getCurrentActiveInningPlayers(inningId: number) {
       const { data, error } = await this.supabaseService.supabase
       .from('inningPlayers')

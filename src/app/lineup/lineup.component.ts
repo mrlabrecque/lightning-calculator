@@ -143,25 +143,29 @@ export class LineupComponent {
   async checkIfGameInSessionAndAmITheCreator() {
     const isThereGameInSession = window.localStorage.getItem("GameInSession");
     if (isThereGameInSession) {
-      const amGameCreator = window.localStorage.getItem("GameCreator");
-      if (amGameCreator) {
-        this.gameService.isGameCreator$.next(true);
-      }
       let gameInSessionId = JSON.parse(isThereGameInSession).id;
       let teamId = JSON.parse(isThereGameInSession).teamId;
-      const currentGameInSession = await this.gameService.getAnyActiveGameFromTeam(teamId)
-      const currentInningInSession = await this.inningService.getActiveInningByGameId(gameInSessionId);
-      const currentInningPlayersInSession = await this.inningService.getCurrentActiveInningPlayers(currentInningInSession.id);
-      if (currentGameInSession && currentInningInSession && currentInningPlayersInSession) {
-        this.inningService.addAnyNeededBenchPositions(currentInningPlayersInSession);
-        this.gameService.currentGame$.next(currentGameInSession[currentGameInSession.length - 1]);
-        this.inningService.currentInning$.next(currentInningInSession);
-        this.inningService.currentInningPlayers$.next(currentInningPlayersInSession);
-      } else {
-          this.removeLocalStorage();
-          this.gameService.currentGame$.next(new Game())
-          this.inningService.currentInning$.next(new Inning())
-          this.inningService.currentInningPlayers$.next([new InningPlayer()])
+      const isGameActive = await this.gameService.isGameActive(gameInSessionId);
+      const amGameCreator = window.localStorage.getItem("GameCreator");
+      if (isGameActive) {
+        if (amGameCreator) {
+          this.gameService.isGameCreator$.next(true);
+        }
+        const currentGameInSession = await this.gameService.getAnyActiveGameFromTeam(teamId)
+        const currentInningInSession = await this.inningService.getActiveInningByGameId(gameInSessionId);
+        const currentInningPlayersInSession = await this.inningService.getCurrentActiveInningPlayers(currentInningInSession.id);
+        if (currentGameInSession && currentInningInSession && currentInningPlayersInSession) {
+          this.inningService.addAnyNeededBenchPositions(currentInningPlayersInSession);
+          this.gameService.currentGame$.next(currentGameInSession[currentGameInSession.length - 1]);
+          this.inningService.currentInning$.next(currentInningInSession);
+          this.inningService.currentInningPlayers$.next(currentInningPlayersInSession);
+        }
+        } else {
+            this.removeLocalStorage();
+            this.gameService.currentGame$.next(new Game())
+            this.gameInSession = null;
+            this.inningService.currentInning$.next(new Inning())
+            this.inningService.currentInningPlayers$.next([new InningPlayer()])
       }
     }
   }

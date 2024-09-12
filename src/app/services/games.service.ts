@@ -64,4 +64,11 @@ export class GamesService {
       .eq("active", true);
     return data;
   }
+  async isGameActive(gameId: number) {
+    const { data, error } = await this.supabaseService.supabase
+      .from('games')
+      .select("active")
+      .eq("id", gameId)
+    return data && data[0].active;
+  }
 }

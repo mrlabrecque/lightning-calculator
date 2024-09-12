@@ -69,7 +69,6 @@ export class LineupComponent {
     this.currentInning = inning;
   }
   async onCurrentInningPlayersChanged(inningPlayers: InningPlayer[]) {
-   // this.gameService.addAnyNeededBenchPositions(inningPlayers);
     await this.handleBenchStuff(inningPlayers);
     let sortedArray: InningPlayer[] = [];
     let copiedInningPlayers: any[] = [...inningPlayers];
@@ -90,31 +89,6 @@ export class LineupComponent {
     inningPlayers.forEach(ip => ip.timesBenched = this.findBenchedRecords(ip.playerId, numberOfBenchedInGame));
     this.updateMostBenchedPlayers(inningPlayers);
   }
-
-  // async createInningPlayers() {
-  //   const currentPlayers = [...this.currentGameRoster];
-  //   const numberOfBenchedInGame = await this.inningService.getBenchNumberPlayer(this.currentGame.id ?? 1, currentPlayers)
-  //   let tempInningPlayers: InningPlayer[] = [];
-  //   if (this.currentInning.inningNumber === 1 && !this.currentInning.submitted) {
-  //     this.createTempInningPlayersForNewGame(currentPlayers, numberOfBenchedInGame, tempInningPlayers);
-  //   } else {
-  //     tempInningPlayers = [...this.currentInningPlayers];
-  //     tempInningPlayers.forEach(player => {
-  //       player.timesBenched = this.findBenchedRecords(player.playerId, numberOfBenchedInGame)
-  //       player.inning = this.currentInning;
-  //     })
-  //   }
-  //   this.currentInningPlayers = [...tempInningPlayers];
-  //   this.updateMostBenchedPlayers();
-  //   if (this.isGameCreator) {
-  //        this.inningService.insertInningPlayers(this.currentInningPlayers, this.positions).then(
-  //     () => this.loading$.next(false)
-  //   );
-  //   } else {
-  //     this.loading$.next(false)
-  //   }
- 
-  // }
   findBenchedRecords(playerId: number = 0, benchedRecords: any) {
     const benchedTimes = benchedRecords?.filter((rec:any) => rec.playerId === playerId)
     return benchedTimes?.length ?? 0

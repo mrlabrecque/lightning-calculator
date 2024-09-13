@@ -27,13 +27,16 @@ import { CardModule } from 'primeng/card';
 import { ChipModule } from 'primeng/chip';
 import { MenubarModule } from 'primeng/menubar';
 import { OrderListModule } from 'primeng/orderlist';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { HeaderComponent } from './header/header.component';
 import { LineupComponent } from './lineup/lineup.component';
 import { TeamSelectorComponent } from './team-selector/team-selector.component';
 import { TrendsComponent } from './trends/trends.component';
+
 
 
 
@@ -73,7 +76,9 @@ import { TrendsComponent } from './trends/trends.component';
     ToastModule,
     SplitButtonModule,
     ChipModule,
-    ProgressSpinnerModule 
+    ProgressSpinnerModule,
+    OverlayPanelModule,
+    TableModule
   ],
   providers: [DatePipe,MessageService],
   bootstrap: [AppComponent],

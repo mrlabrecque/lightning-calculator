@@ -42,6 +42,10 @@ export class LineupComponent {
     })
   currentInningPlayersView: InningPlayerView[] = [];
   currentGameRoster: Player[] = [];
+  inningPlayersInningsPitchedLastThreeDaysSubscription: Subscription = this.inningService.currentInningPlayersInningsPitchedPerTeamLastThreeDays$
+      .pipe(filter((value) => value && value.length > 0))
+  .subscribe(res => this.onCurrentInningPlayersInningPitchedLastThreeDaysChanged(res))
+  currentInningPlayersInningsPitchedPerTeamLastThreeDays: any[] = []; 
   gameCreatorSubscription: Subscription = this.gameService.isGameCreator$
   .subscribe(res => this.isGameCreator = res)
   isGameCreator: boolean = false; 
@@ -82,6 +86,9 @@ export class LineupComponent {
     sortedArray.forEach((v: any) => delete v.found);
     this.currentInningPlayersView = sortedArray.length === inningPlayers.length ? sortedArray : inningPlayers;
     this.loading$.next(false);
+  }
+  onCurrentInningPlayersInningPitchedLastThreeDaysChanged(res: any) {
+    this.currentInningPlayersInningsPitchedPerTeamLastThreeDays = this.mapInningsPitchedLastThreeDays(res);
   }
 
   private async handleBenchStuff(inningPlayers: InningPlayerView[]) {
@@ -165,9 +172,42 @@ export class LineupComponent {
             this.gameService.currentGame$.next(new Game())
             this.gameInSession = null;
             this.inningService.currentInning$.next(new Inning())
-            this.inningService.currentInningPlayers$.next([new InningPlayerView()])
+        this.inningService.currentInningPlayers$.next([new InningPlayerView()])
+        this.loading$.next(false);
+      } 
+    } else {
+            this.removeLocalStorage();
+            this.gameService.currentGame$.next(new Game())
+            this.gameInSession = null;
+            this.inningService.currentInning$.next(new Inning())
+      this.inningService.currentInningPlayers$.next([new InningPlayerView()])
+              this.loading$.next(false);
+
       }
-    }
+  }
+  calculateInningsPitched(event: any) {
+    const currentTeamId = this.currentGame.teamId || -1;
+    this.inningService.getPlayersInningPitchedLastThreeDays(currentTeamId);
+  }
+  mapInningsPitchedLastThreeDays(res: any[]) {
+    const mappedArray: any = []
+    res.forEach(player => {
+      const found = mappedArray.find((ma: any) => ma.playerId === player.player_id);
+      if (!found) {
+        mappedArray.push({
+          playerId: player.player_id,
+          playerName: player.player_name,
+          pitchingRanking: player.player_pitch_ranking,
+          noOfInnings: 1
+        })
+      } else {
+        mappedArray[mappedArray.findIndex((el: any) => el.playerId === player.player_id)].noOfInnings = found.noOfInnings+ 1;
+      }
+    })
+    return mappedArray;
+  }
+  getInningsPitchedByPlayerId(res:any, playerId: number) {
+    return res.filter((re: any) => re.player_id === playerId).length;
   }
   async newInningInserted(inning: Inning = new Inning()) {
       this.checkIfGameInSessionAndAmITheCreator();

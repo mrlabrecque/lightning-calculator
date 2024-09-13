@@ -17,6 +17,7 @@ export class InningService {
   nextInningForViewerClicked$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning());
 
   currentInningPlayers$: BehaviorSubject<InningPlayerView[]> = new BehaviorSubject([new InningPlayerView()]);
+  currentInningPlayersInningsPitchedPerTeamLastThreeDays$: BehaviorSubject<any | null> = new BehaviorSubject(null);
 
 constructor(private supabaseService: SupabaseService, private messageService: MessageService) {
     this.supabaseService.supabase
@@ -162,4 +163,19 @@ public addAnyBenchPositionsNeeded(length: number, positions: any) {
     }
     return positions;
   } 
+  public async getPlayersInningPitchedLastThreeDays(teamId: number) {
+    let date = new Date();
+    date.setDate(date.getDate() - 2);
+    date.setHours(0);
+    const dateString = date.toISOString();
+  const { data, error } = await this.supabaseService.supabase
+    .from('inning_players_full_view')
+    .select()
+    .gte('game_created_at', dateString)
+    .eq('inning_player_position', 'P')
+    .eq('game_team_id', teamId)
+    console.log(data);
+    this.currentInningPlayersInningsPitchedPerTeamLastThreeDays$.next(data);
+  }
+
 }

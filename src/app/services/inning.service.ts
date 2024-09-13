@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { Inning } from '../models/inning';
-import { InningPlayer } from '../models/inning-player';
+import { InningPlayer, InningPlayerView } from '../models/inning-player';
 import { POSITIONS } from '../models/positions.';
 import { SupabaseService } from './supabase.service';
 
@@ -16,7 +16,7 @@ export class InningService {
   // Create a function to handle inserts
   nextInningForViewerClicked$: BehaviorSubject<Inning> = new BehaviorSubject(new Inning());
 
-  currentInningPlayers$: BehaviorSubject<InningPlayer[]> = new BehaviorSubject([new InningPlayer()]);
+  currentInningPlayers$: BehaviorSubject<InningPlayerView[]> = new BehaviorSubject([new InningPlayerView()]);
 
 constructor(private supabaseService: SupabaseService, private messageService: MessageService) {
     this.supabaseService.supabase
@@ -50,13 +50,12 @@ async createNewActiveInning(gameId: number, inningPlayers: InningPlayer[]) {
         const tempInningPlayer: InningPlayer = {
           inningId: inning.id,
           gameId: inning.gameId,
-          playerName: inning.inningNumber === 1 ? player.Name : player.playerName,
           playerId: inning.inningNumber === 1 ? player.id : player.playerId,
           position: "",
         }
         inningPlayersToAdd.push(tempInningPlayer);
       })
-      this.insertInningPlayers(inningPlayersToAdd)
+      this.insertInningPlayers(inningPlayersToAdd, inning.id)
     }
   async getNextInningNumber(gameId: number) {
     const { data, error } = await this.supabaseService.supabase
@@ -92,11 +91,12 @@ async createNewActiveInning(gameId: number, inningPlayers: InningPlayer[]) {
       .update({ active: false })
       .eq("gameId", gameId);
   }
-  async insertInningPlayers(inningPlayersToAdd: InningPlayer[]) {
-    const { data, error } = await this.supabaseService.supabase
+  async insertInningPlayers(inningPlayersToAdd: InningPlayer[], inningId: number) {
+    await this.supabaseService.supabase
       .from('inningPlayers')
       .insert(inningPlayersToAdd)
-    this.currentInningPlayers$.next(inningPlayersToAdd);
+    const currentActiveInningPlayers = await this.getCurrentActiveInningPlayers(inningId);
+    this.currentInningPlayers$.next(currentActiveInningPlayers);
   }
   async updateInningPlayers(inningPlayers: InningPlayer[]) {
     inningPlayers.forEach(async (player: InningPlayer, i) => {
@@ -110,12 +110,18 @@ async createNewActiveInning(gameId: number, inningPlayers: InningPlayer[]) {
   async getCurrentActiveInningPlayers(inningId: number) {
     const { data, error } = await this.supabaseService.supabase
       .from('inningPlayers')
-      .select()
+      .select(`
+        id,
+        inningId,
+        gameId,
+        playerId,
+        position,
+        players ( Name )`)
       .eq('inningId', inningId)
     if (data && data?.length > 0) {
-      return <InningPlayer[]>data;
+      return <any[]>data;
     } else {
-      return [new InningPlayer()]
+      return []
     }
   }
   async getBenchNumberPlayer(gameId: number, players: InningPlayer[]) {

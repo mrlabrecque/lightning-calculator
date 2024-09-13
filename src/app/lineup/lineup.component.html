@@ -1,5 +1,9 @@
 <div class="shadow-4 m-3">
-    <ng-container *ngIf="currentGame.id === -1">
+    <div class="flex justify-content-center"
+         *ngIf="(loading$ | async)">
+        <p-progressSpinner ariaLabel="loading" />
+    </div>
+    <ng-container *ngIf="!(loading$ | async) && currentGame.id === -1">
         <form #statForm="ngForm"
               (ngSubmit)="createNewGame()">
             <div class="formgrid grid p-4 flex align-items-end">
@@ -16,99 +20,91 @@
             </div>
         </form>
     </ng-container>
-    <ng-container *ngIf="currentGame.id > -1">
-        <p-card [header]="'Inning ' + currentInning.inningNumber">
-            <div class="flex justify-content-center"
-                 *ngIf="(loading$ | async)">
-                <p-progressSpinner ariaLabel="loading" />
+    <ng-container *ngIf="!(loading$ | async) && currentGame.id > -1">
+        <div class="flex justify-content-between align-items-center p-4 text-2xl font-bold">
+            <span>Inning {{currentInning.inningNumber}}</span>
+            <span *ngIf="currentInning.submitted"><i class="text-2xl pi pi-lock scalein animation-duration-2000 animation-iteration-infinite"
+                   style="color: gold">
+                </i></span>
+        </div>
+        <div class="grid grid-nogutter pl-4 pr-4">
+            <div class="col-3">
+                <p-orderList [value]="positions"
+                             header="Pos."
+                             [stripedRows]="true">
+                    <ng-template let-position
+                                 pTemplate="item">
+                        <div>
+                            <span class="font-bold">{{ position.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-orderList>
             </div>
-            <div *ngIf="!(loading$ | async)">
-                <div class="grid grid-nogutter">
-                    <div class="col-3">
-                        <p-orderList [value]="positions"
-                                     header="Pos."
+            <div class="col-9 linup-container">
+                <form #inningForm="ngForm"
+                      (ngSubmit)="submitInning()">
+                    <div class="lineup">
+                        <p-orderList [value]="currentInningPlayersView"
+                                     header="Players"
+                                     [dragdrop]="!currentInning.submitted && isGameCreator"
                                      [stripedRows]="true">
-                            <ng-template let-position
+                            <ng-template let-inningPlayer
+                                         let-i="index"
                                          pTemplate="item">
-                                <div>
-                                    <span class="font-bold">{{ position.label }}</span>
+                                <div class="flex justify-content-between">
+                                    <span class="font-bold">{{ inningPlayer?.players?.Name }}</span>
+                                    <span *ngIf="i>8">
+                                        <p-badge [value]="inningPlayer.timesBenched + 1"
+                                                 severity="danger" />
+                                    </span>
                                 </div>
                             </ng-template>
                         </p-orderList>
+                        <ng-container *ngIf="currentInningPlayersView.length == 1 && !isGameCreator">
+                            <div class="locked-overlay">
+                                <div class="locked-object"><i class="pi pi-lock"
+                                       style="font-size: 2.5rem">
+                                    </i>
+                                    <p>Inning needs confirmed by coach</p>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
-                    <div class="col-9 linup-container">
-                        <form #inningForm="ngForm"
-                              (ngSubmit)="submitInning()">
-                            <div class="lineup">
-                                <p-orderList [value]="currentInningPlayers"
-                                             header="Players"
-                                             [dragdrop]="!currentInning.submitted && isGameCreator"
-                                             [stripedRows]="true">
-                                    <ng-template let-inningPlayer
-                                                 let-i="index"
-                                                 pTemplate="item">
-                                        <div class="flex justify-content-between">
-                                            <span class="font-bold">{{ inningPlayer?.playerName }}</span>
-                                            <span *ngIf="i>8">
-                                                <p-badge [value]="inningPlayer.timesBenched + 1"
-                                                         severity="danger" />
-                                            </span>
-                                        </div>
-                                    </ng-template>
-                                </p-orderList>
-                                <ng-container *ngIf="currentInning.submitted && isGameCreator">
-                                    <div class="locked-overlay">
-                                        <div class="locked-object"><i class="pi pi-lock"
-                                               style="font-size: 2.5rem">
-                                            </i>
-                                            <p>Click "Next Inning" to unlock</p>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                                <ng-container *ngIf="currentInningPlayers.length == 1 && !isGameCreator">
-                                    <div class="locked-overlay">
-                                        <div class="locked-object"><i class="pi pi-lock"
-                                               style="font-size: 2.5rem">
-                                            </i>
-                                            <p>Inning needs confirmed by coach</p>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                            </div>
-                            <div class="flex justify-content-end mt-2"
-                                 *ngIf="isGameCreator">
-                                <ng-container *ngIf="!currentInning?.submitted">
-                                    <p-button label="Save Inning"
-                                              type="submit"
-                                              [disabled]="currentInning.submitted"
-                                              [raised]="true"></p-button>
-                                </ng-container>
-                                <ng-container *ngIf="currentInning?.submitted">
-                                    <p-splitButton label="Next Inning"
-                                                   [model]="splitButtonList"
-                                                   styleClass="p-button-success"
-                                                   (onClick)="onNextInningClicked()"
-                                                   severity="success" />
-                                </ng-container>
-                            </div>
+                    <div class="flex justify-content-end mt-2"
+                         *ngIf="isGameCreator">
+                        <ng-container *ngIf="!currentInning?.submitted">
+                            <p-button label="Save Inning"
+                                      type="submit"
+                                      [disabled]="currentInning.submitted"
+                                      [raised]="true"></p-button>
+                        </ng-container>
+                        <ng-container *ngIf="currentInning?.submitted">
+                            <p-splitButton label="Next Inning"
+                                           [model]="splitButtonList"
+                                           styleClass="p-button-success"
+                                           (onClick)="onNextInningClicked()"
+                                           severity="success" />
+                        </ng-container>
+                    </div>
 
-                        </form>
-                    </div>
-                </div>
+                </form>
             </div>
+        </div>
+        <ng-container *ngIf="sortedInningPlayersByMaxBenched">
+            <div class="p-4 pt-0">
+                <ng-container *ngFor="let benchedPlayers of sortedInningPlayersByMaxBenched">
+                    <p-chip styleClass="pr-0 pl-3 mt-2">
+                        <span class="mr-2 font-medium">
+                            {{benchedPlayers.players.Name}}
+                        </span>
+                        <span class="bg-red-500 border-circle w-2rem h-2rem text-white flex align-items-center justify-content-center">
+                            {{benchedPlayers.timesBenched}}
+                        </span>
+                    </p-chip>
+                </ng-container>
+            </div>
+        </ng-container>
 
-            <ng-container *ngFor="let benchedPlayers of sortedInningPlayersByMaxBenched">
-                <p-chip styleClass="pr-0 pl-3 mt-2">
-                    <span class="mr-2 font-medium">
-                        {{benchedPlayers.playerName}}
-                    </span>
-                    <span class="bg-red-500 border-circle w-2rem h-2rem text-white flex align-items-center justify-content-center">
-                        {{benchedPlayers.timesBenched}}
-                    </span>
-                </p-chip>
-            </ng-container>
-
-        </p-card>
     </ng-container>
 </div>
 <ng-container *ngIf="!!gameInSession && currentGame.id == -1">

@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { BehaviorSubject, filter, Subscription } from 'rxjs';
 import { Game } from '../models/game';
 import { Inning } from '../models/inning';
-import { InningPlayer } from '../models/inning-player';
+import { InningPlayerView } from '../models/inning-player';
 import { Player } from '../models/player';
 import { POSITIONS } from '../models/positions.';
 import { GamesService } from '../services/games.service';
@@ -36,11 +36,11 @@ export class LineupComponent {
     .pipe(filter((value) => value.id > -1))
     .subscribe(res => this.onCurrentInningChanged(res))
   currentInning: Inning = new Inning(); 
-    currentInningPlayersSubscription: Subscription = this.inningService.currentInningPlayers$
+  currentInningPlayersSubscription: Subscription = this.inningService.currentInningPlayers$
     .pipe(filter(value => value.length > 1 ))
-      .subscribe(res => { this.onCurrentInningPlayersChanged(res)
+      .subscribe((res: InningPlayerView[]) => { this.onCurrentInningPlayersChanged(res)
     })
-  currentInningPlayers: InningPlayer[] = [];
+  currentInningPlayersView: InningPlayerView[] = [];
   currentGameRoster: Player[] = [];
   gameCreatorSubscription: Subscription = this.gameService.isGameCreator$
   .subscribe(res => this.isGameCreator = res)
@@ -68,9 +68,9 @@ export class LineupComponent {
   onCurrentInningChanged(inning: Inning) {
     this.currentInning = inning;
   }
-  async onCurrentInningPlayersChanged(inningPlayers: InningPlayer[]) {
+  async onCurrentInningPlayersChanged(inningPlayers: InningPlayerView[]) {
     await this.handleBenchStuff(inningPlayers);
-    let sortedArray: InningPlayer[] = [];
+    let sortedArray: InningPlayerView[] = [];
     let copiedInningPlayers: any[] = [...inningPlayers];
     this.positions.forEach(pos => {
       const found = copiedInningPlayers.find(ip => ip.position === pos.value&& !ip.found);
@@ -80,11 +80,11 @@ export class LineupComponent {
       }
     })
     sortedArray.forEach((v: any) => delete v.found);
-    this.currentInningPlayers = sortedArray.length === inningPlayers.length ? sortedArray : inningPlayers;
+    this.currentInningPlayersView = sortedArray.length === inningPlayers.length ? sortedArray : inningPlayers;
     this.loading$.next(false);
   }
 
-  private async handleBenchStuff(inningPlayers: InningPlayer[]) {
+  private async handleBenchStuff(inningPlayers: InningPlayerView[]) {
     const numberOfBenchedInGame = await this.inningService.getBenchNumberPlayer(this.currentGame.id ?? 1, inningPlayers);
     inningPlayers.forEach(ip => ip.timesBenched = this.findBenchedRecords(ip.playerId, numberOfBenchedInGame));
     this.updateMostBenchedPlayers(inningPlayers);
@@ -94,7 +94,7 @@ export class LineupComponent {
     return benchedTimes?.length ?? 0
   }
 
-  updateMostBenchedPlayers(inningPlayers: InningPlayer[]) {
+  updateMostBenchedPlayers(inningPlayers: InningPlayerView[]) {
     const copiedInningPlayers = [...inningPlayers];
     copiedInningPlayers.sort((a, b) => {
      return a.timesBenched && b.timesBenched ? (b.timesBenched) - (a.timesBenched) : 0
@@ -108,17 +108,17 @@ export class LineupComponent {
       await this.inningService.updateInningToSubmitted(this.currentInning);
     }
     this.setPositionsOnPlayers();
-    this.inningService.updateInningPlayers(this.currentInningPlayers).then(
+    this.inningService.updateInningPlayers(this.currentInningPlayersView).then(
       () => this.messageService.add({ severity: 'success', summary: 'Inning Saved', detail: 'Start next inning or complete game' })
     );
   }
   setPositionsOnPlayers() {
-    this.currentInningPlayers.forEach((inningPlayer: InningPlayer, i) => {
+    this.currentInningPlayersView.forEach((inningPlayer: InningPlayerView, i) => {
       inningPlayer.position = this.positions[i].value;
     })
   }
   onNextInningClicked(){
-    this.inningService.createNewActiveInning(this.currentGame?.id, this.currentInningPlayers)
+    this.inningService.createNewActiveInning(this.currentGame?.id, this.currentInningPlayersView)
   }
 
   async completeGame() {
@@ -165,7 +165,7 @@ export class LineupComponent {
             this.gameService.currentGame$.next(new Game())
             this.gameInSession = null;
             this.inningService.currentInning$.next(new Inning())
-            this.inningService.currentInningPlayers$.next([new InningPlayer()])
+            this.inningService.currentInningPlayers$.next([new InningPlayerView()])
       }
     }
   }

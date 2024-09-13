@@ -1,13 +1,15 @@
-import { Inning } from "./inning";
+import { Player } from "./player";
 
 export class InningPlayer {
     id?: number = -1;
-    inning?: Inning = new Inning();
     gameId?: number;
     inningId?: number;
-    playerName?: string;
     playerId?: number;
     position?: string;
-    timesBenched?: number = 0;
 
+}
+
+export class InningPlayerView extends InningPlayer {
+    player?: Player;
+    timesBenched: number = 0;
 }

@@ -22,7 +22,7 @@ export class InningService {
 constructor(private supabaseService: SupabaseService, private messageService: MessageService) {
     this.supabaseService.supabase
       .channel('table_db_changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'innings' },
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'innings' },
         (payload) => this.newInningInserted(<Inning>payload.new)
       )
       .subscribe()

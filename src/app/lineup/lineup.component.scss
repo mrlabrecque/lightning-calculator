@@ -3,14 +3,17 @@
     display: none;
   }
 }
-:host ::ng-deep {
-  .p-badge{
-    font-size: 0.5rem;
-    font-weight: 700;
-    min-width: 1rem;
-    height: 1rem;
-    line-height: 1rem;
-  }
+// :host ::ng-deep {
+//   .p-badge{
+//     font-size: 0.5rem;
+//     font-weight: 700;
+//     min-width: 1rem;
+//     height: 1rem;
+//     line-height: 1rem;
+//   }
+// }
+.position-list {
+  line-height: 1.5em;
 }
 .lineup {
   position: relative;
@@ -39,4 +42,7 @@
         top: 50%;
         -webkit-transform: translateY(-50%);
         transform: translateY(-50%);
+}
+.a-pitch {
+  background-color: blue;
 }

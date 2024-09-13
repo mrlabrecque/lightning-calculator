@@ -34,8 +34,9 @@
                              [stripedRows]="true">
                     <ng-template let-position
                                  pTemplate="item">
-                        <div>
-                            <span class="font-bold">{{ position.label }}</span>
+                        <div class="position-list"
+                             [ngClass]="position.label === 'B' ? 'font-bold' : ''">
+                            <span class="text-s">{{ position.label }}</span>
                         </div>
                     </ng-template>
                 </p-orderList>
@@ -51,11 +52,16 @@
                             <ng-template let-inningPlayer
                                          let-i="index"
                                          pTemplate="item">
-                                <div class="flex justify-content-between">
-                                    <span class="font-bold">{{ inningPlayer?.players?.Name }}</span>
-                                    <span *ngIf="i>8">
-                                        <p-badge [value]="inningPlayer.timesBenched + 1"
-                                                 severity="danger" />
+                                <div class="flex justify-content-between align-items-center"
+                                     [ngClass]="i>8? 'font-bold' : ''">
+                                    <span class="text-s">{{ inningPlayer?.players?.Name }}
+
+                                    </span>
+                                    <span>
+                                        <p-badge [value]="inningPlayer?.players?.PitchRanking"
+                                                 [severity]="inningPlayer?.players?.PitchRanking === 'A' ? 'success' : 
+                                                                                         inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
+                                                                                         inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
                                     </span>
                                 </div>
                             </ng-template>

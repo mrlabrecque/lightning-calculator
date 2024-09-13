@@ -116,7 +116,7 @@ async createNewActiveInning(gameId: number, inningPlayers: InningPlayer[]) {
         gameId,
         playerId,
         position,
-        players ( Name )`)
+        players ( Name, PitchRanking )`)
       .eq('inningId', inningId)
     if (data && data?.length > 0) {
       return <any[]>data;

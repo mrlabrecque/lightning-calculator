@@ -32,7 +32,7 @@
                               size="small" />
                 </span>
                 <span *ngIf="currentInning.submitted"><i class="text-2xl pi pi-lock scalein animation-duration-2000 animation-iteration-infinite"
-                       style="color: gold">
+                       style="color: darkgoldenrod">
                     </i></span>
             </span>
 
@@ -70,8 +70,8 @@
                                     <span>
                                         <p-badge [value]="inningPlayer?.players?.PitchRanking"
                                                  [severity]="inningPlayer?.players?.PitchRanking === 'A' ? 'success' : 
-                                                                                         inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
-                                                                                         inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
+                                                                inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
+                                                                inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
                                     </span>
                                 </div>
                             </ng-template>
@@ -147,12 +147,15 @@
 <p-overlayPanel #pitchingOverlay
                 [style]="{ width: '300px' }"
                 [showCloseIcon]="true"
-                (onShow)="calculateInningsPitched($event)">
+                (onShow)="calculateInningsPitched()">
+
     <ng-template pTemplate="content">
+        <div class="flex justify-content-end align-items-center">
+            <p-inputSwitch (onChange)="filterToTodayClicked($event)" />
+            <span class="text-xs">Show today only</span>
+        </div>
         <p-table [value]="currentInningPlayersInningsPitchedPerTeamLastThreeDays"
                  selectionMode="single"
-                 [paginator]="true"
-                 [rows]="10"
                  responsiveLayout="scroll">
             <ng-template pTemplate="header">
                 <tr>
@@ -174,9 +177,15 @@
                         {{ player.playerName }}
                     </td>
                     <td>
-                        {{player.pitchingRanking}}
+                        <span>
+                            <p-badge [value]="player.pitchingRanking"
+                                     [severity]="player.pitchingRanking === 'A' ? 'success' : 
+                                         player.pitchingRanking === 'B' ? 'warning' : 
+                                        player.pitchingRanking === 'C' ? 'warning' : 'danger'"></p-badge>
+                        </span>
                     </td>
-                    <td>{{ player.noOfInnings }}</td>
+                    <td [ngClass]="player.noOfInnings > 6 ? 'innings-pitched-danger' : 
+                        player.noOfInnings > 3 ? 'innings-pitched-warn':''">{{ player.noOfInnings }}</td>
                 </tr>
             </ng-template>
         </p-table>

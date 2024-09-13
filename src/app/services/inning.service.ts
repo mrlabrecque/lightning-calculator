@@ -163,18 +163,19 @@ public addAnyBenchPositionsNeeded(length: number, positions: any) {
     }
     return positions;
   } 
-  public async getPlayersInningPitchedLastThreeDays(teamId: number) {
+  public async getPlayersInningPitchedLastThreeDays(teamId: number, singleDay: boolean = false) {
     let date = new Date();
-    date.setDate(date.getDate() - 2);
+    if (!singleDay) {
+       date.setDate(date.getDate() - 2);
+    }
     date.setHours(0);
-    const dateString = date.toISOString();
-  const { data, error } = await this.supabaseService.supabase
-    .from('inning_players_full_view')
-    .select()
-    .gte('game_created_at', dateString)
-    .eq('inning_player_position', 'P')
-    .eq('game_team_id', teamId)
-    console.log(data);
+    const dateString = date.toISOString().split("T")[0];
+    const { data, error } = await this.supabaseService.supabase
+      .from('inning_players_full_view')
+      .select()
+      .gte('game_created_at', dateString)
+      .eq('inning_player_position', 'P')
+      .eq('game_team_id', teamId)
     this.currentInningPlayersInningsPitchedPerTeamLastThreeDays$.next(data);
   }
 

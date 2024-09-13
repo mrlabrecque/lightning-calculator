@@ -15,6 +15,14 @@
 .position-list {
   line-height: 1.5em;
 }
+.innings-pitched-warn {
+  color: darkgoldenrod;
+  font-weight: 800;
+}
+.innings-pitched-danger {
+    color: red;
+    font-weight: 1000;
+}
 .lineup {
   position: relative;
 }

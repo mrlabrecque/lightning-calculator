@@ -43,7 +43,7 @@ export class LineupComponent {
   currentInningPlayersView: InningPlayerView[] = [];
   currentGameRoster: Player[] = [];
   inningPlayersInningsPitchedLastThreeDaysSubscription: Subscription = this.inningService.currentInningPlayersInningsPitchedPerTeamLastThreeDays$
-      .pipe(filter((value) => value && value.length > 0))
+      .pipe(filter((value) => !!value))
   .subscribe(res => this.onCurrentInningPlayersInningPitchedLastThreeDaysChanged(res))
   currentInningPlayersInningsPitchedPerTeamLastThreeDays: any[] = []; 
   gameCreatorSubscription: Subscription = this.gameService.isGameCreator$
@@ -185,9 +185,9 @@ export class LineupComponent {
 
       }
   }
-  calculateInningsPitched(event: any) {
+  calculateInningsPitched(singleDay:boolean = false) {
     const currentTeamId = this.currentGame.teamId || -1;
-    this.inningService.getPlayersInningPitchedLastThreeDays(currentTeamId);
+    this.inningService.getPlayersInningPitchedLastThreeDays(currentTeamId, singleDay);
   }
   mapInningsPitchedLastThreeDays(res: any[]) {
     const mappedArray: any = []
@@ -208,6 +208,13 @@ export class LineupComponent {
   }
   getInningsPitchedByPlayerId(res:any, playerId: number) {
     return res.filter((re: any) => re.player_id === playerId).length;
+  }
+  filterToTodayClicked(event:any) {
+    if (event.checked) {
+      this.calculateInningsPitched(true);
+    } else {
+      this.calculateInningsPitched(false);
+    }
   }
   async newInningInserted(inning: Inning = new Inning()) {
       this.checkIfGameInSessionAndAmITheCreator();

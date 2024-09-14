@@ -22,18 +22,17 @@
     </ng-container>
     <ng-container *ngIf="!(loading$ | async) && currentGame.id > -1">
         <div class="flex justify-content-between align-items-center p-4 text-2xl font-bold">
-            <span>Inning {{currentInning.inningNumber}}</span>
-            <span>
-                <span>
-                    <p-button label="Pitched"
-                              [rounded]="true"
-                              severity="secondary"
-                              (onClick)="pitchingOverlay.toggle($event)"
-                              size="small" />
-                </span>
+            <span>Inning {{currentInning.inningNumber}}
                 <span *ngIf="currentInning.submitted"><i class="text-2xl pi pi-lock scalein animation-duration-2000 animation-iteration-infinite"
                        style="color: darkgoldenrod">
                     </i></span>
+            </span>
+            <span>
+                <p-button label="Pitched"
+                          [rounded]="true"
+                          severity="secondary"
+                          (onClick)="pitchingOverlay.toggle($event)"
+                          size="small" />
             </span>
 
         </div>
@@ -76,7 +75,7 @@
                                 </div>
                             </ng-template>
                         </p-orderList>
-                        <ng-container *ngIf="currentInningPlayersView.length == 1 && !isGameCreator">
+                        <ng-container *ngIf="!currentInning.submitted && !isGameCreator">
                             <div class="locked-overlay">
                                 <div class="locked-object"><i class="pi pi-lock"
                                        style="font-size: 2.5rem">

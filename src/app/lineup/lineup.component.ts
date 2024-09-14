@@ -116,7 +116,10 @@ export class LineupComponent {
     }
     this.setPositionsOnPlayers();
     this.inningService.updateInningPlayers(this.currentInningPlayersView).then(
-      () => this.messageService.add({ severity: 'success', summary: 'Inning Saved', detail: 'Start next inning or complete game' })
+      () => {
+        this.handleBenchStuff(this.currentInningPlayersView);
+        this.messageService.add({ severity: 'success', summary: 'Inning Saved', detail: 'Start next inning or complete game' })
+      }
     );
   }
   setPositionsOnPlayers() {

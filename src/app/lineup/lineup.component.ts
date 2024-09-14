@@ -117,7 +117,13 @@ export class LineupComponent {
     this.setPositionsOnPlayers();
     this.inningService.updateInningPlayers(this.currentInningPlayersView).then(
       () => {
-        this.handleBenchStuff(this.currentInningPlayersView);
+        //adding benched players before next inning to give coach a good view of actual status
+        this.currentInningPlayersView.forEach(ip => {
+          if (ip.position === 'B') {
+            ip.timesBenched++
+          }
+      })
+        this.updateMostBenchedPlayers(this.currentInningPlayersView);
         this.messageService.add({ severity: 'success', summary: 'Inning Saved', detail: 'Start next inning or complete game' })
       }
     );
@@ -148,6 +154,7 @@ export class LineupComponent {
     if (gameCreatorToRemove) {
       window.localStorage.removeItem('GameCreator');
     }
+    this.gameService.isGameCreator$.next(false);
   }
 
   async checkIfGameInSessionAndAmITheCreator() {

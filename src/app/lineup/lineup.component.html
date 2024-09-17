@@ -28,8 +28,8 @@
                     </i></span>
             </span>
             <span>
-                <p-button label="Pitched"
-                          [rounded]="true"
+                <p-button [rounded]="true"
+                          icon="fa-solid fa-baseball"
                           severity="secondary"
                           (onClick)="pitchingOverlay.toggle($event)"
                           size="small" />
@@ -38,22 +38,51 @@
         </div>
         <div class="grid grid-nogutter pl-4 pr-4">
             <div class="col-3">
-                <p-orderList [value]="positions"
-                             header="Pos."
-                             [stripedRows]="true">
-                    <ng-template let-position
-                                 pTemplate="item">
-                        <div class="position-list"
-                             [ngClass]="position.label === 'B' ? 'font-bold' : ''">
-                            <span class="text-s">{{ position.label }}</span>
-                        </div>
-                    </ng-template>
-                </p-orderList>
+                <div class="header-cell one">
+                    <span class="text-s font-bold">Pos.</span>
+                </div>
             </div>
-            <div class="col-9 linup-container">
+            <div class="col-9">
+                <div class="header-cell two">
+                    <span class="text-s font-bold">Player</span>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="example-list positions">
+                    <div class="example-box"
+                         *ngFor="let pos of positions; let i = index">
+                        <div class="flex justify-content-between align-items-center"
+                             [ngClass]="i>8? 'font-bold' : ''">
+                            <span class="text-s"> {{pos.label}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-9">
                 <form #inningForm="ngForm"
                       (ngSubmit)="submitInning()">
-                    <div class="lineup">
+                    <div cdkDropList
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box"
+                             *ngFor="let inningPlayer of currentInningPlayersView; let i = index"
+                             [ngClass]="!currentInning.submitted && isGameCreator ? 'move' : ''"
+                             cdkDrag>
+                            <div class="flex justify-content-between align-items-center"
+                                 [ngClass]="i>8? 'font-bold' : ''">
+                                <span class="text-s">{{ inningPlayer?.players?.Name }}
+
+                                </span>
+                                <span style="padding: 0; margin: 0;">
+                                    <p-badge [value]="inningPlayer?.players?.PitchRanking"
+                                             [severity]="inningPlayer?.players?.PitchRanking === 'A' ? 'success' : 
+                                                inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
+                                                inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="lineup">
                         <p-orderList [value]="currentInningPlayersView"
                                      header="Players"
                                      [dragdrop]="!currentInning.submitted && isGameCreator"
@@ -84,7 +113,7 @@
                                 </div>
                             </div>
                         </ng-container>
-                    </div>
+                    </div> -->
                     <div class="flex justify-content-end mt-2"
                          *ngIf="isGameCreator">
                         <ng-container *ngIf="!currentInning?.submitted">

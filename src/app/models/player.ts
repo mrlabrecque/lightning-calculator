@@ -3,7 +3,7 @@ export class Player {
     TeamId?: number;
     Name?: string;
     OffensiveData?: string;
-    PitchRanking?: PitchRankingEnum;
+    PitchRanking?: string;
 }
 enum PitchRankingEnum {
     "A",

@@ -10,6 +10,6 @@ export class InningPlayer {
 }
 
 export class InningPlayerView extends InningPlayer {
-    player?: Player;
+    players?: Player;
     timesBenched: number = 0;
 }

@@ -1,3 +1,4 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, filter, Subscription } from 'rxjs';
@@ -225,6 +226,12 @@ export class LineupComponent {
     } else {
       this.calculateInningsPitched(false);
     }
+  }
+  drop(event: CdkDragDrop<string[]>) {
+    this.currentInningPlayersView.splice(event.currentIndex, 0)
+    const b = this.currentInningPlayersView[event.currentIndex];
+    this.currentInningPlayersView[event.currentIndex] = this.currentInningPlayersView[event.previousIndex];
+    this.currentInningPlayersView[event.previousIndex] = b;
   }
   async newInningInserted(inning: Inning = new Inning()) {
       this.checkIfGameInSessionAndAmITheCreator();

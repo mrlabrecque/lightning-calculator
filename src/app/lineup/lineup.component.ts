@@ -9,6 +9,7 @@ import { Player } from '../models/player';
 import { POSITIONS } from '../models/positions.';
 import { GamesService } from '../services/games.service';
 import { InningService } from '../services/inning.service';
+import { PositionRankingService } from '../services/position-ranking.service';
 import { RosterService } from '../services/roster.service';
 import { TeamsService } from '../services/teams.service';
 
@@ -59,7 +60,9 @@ export class LineupComponent {
       }
     }];
   sortedInningPlayersByMaxBenched: any;
-  constructor(private messageService: MessageService,private gameService: GamesService, private inningService: InningService, private rosterService: RosterService, private teamService: TeamsService) {
+  inningPercentGrade$: BehaviorSubject<number> = new BehaviorSubject(0);
+  inningPercentSeverity: string = 'success';
+  constructor(private messageService: MessageService,private gameService: GamesService, private inningService: InningService, private rosterService: RosterService, private teamService: TeamsService, private positionRankingService: PositionRankingService) {
     
   }
   ngOnInit() {
@@ -86,6 +89,7 @@ export class LineupComponent {
     })
     sortedArray.forEach((v: any) => delete v.found);
     this.currentInningPlayersView = sortedArray.length === inningPlayers.length ? sortedArray : inningPlayers;
+    this.calculateInningGrade();
     this.loading$.next(false);
   }
   onCurrentInningPlayersInningPitchedLastThreeDaysChanged(res: any) {
@@ -177,6 +181,7 @@ export class LineupComponent {
           this.gameService.currentGame$.next(currentGameInSession[currentGameInSession.length - 1]);
           this.inningService.currentInning$.next(currentInningInSession);
           this.inningService.currentInningPlayers$.next(currentInningPlayersInSession);
+
         }
         } else {
             this.removeLocalStorage();
@@ -194,7 +199,7 @@ export class LineupComponent {
       this.inningService.currentInningPlayers$.next([new InningPlayerView()])
               this.loading$.next(false);
 
-      }
+    }
   }
   calculateInningsPitched(singleDay:boolean = false) {
     const currentTeamId = this.currentGame.teamId || -1;
@@ -232,8 +237,44 @@ export class LineupComponent {
     const b = this.currentInningPlayersView[event.currentIndex];
     this.currentInningPlayersView[event.currentIndex] = this.currentInningPlayersView[event.previousIndex];
     this.currentInningPlayersView[event.previousIndex] = b;
+    this.calculateInningGrade()
   }
   async newInningInserted(inning: Inning = new Inning()) {
       this.checkIfGameInSessionAndAmITheCreator();
+  }
+  async calculateInningGrade() {
+   
+    let maxNumber: number = 0;
+    let positions: any;
+    await this.positionRankingService.getPositionsAndWeights(this.currentInningPlayersView).then(
+      (res: any) =>  positions = res 
+    )
+    const filteredPlayers: any[] = [];
+    this.currentInningPlayersView.forEach((inningPlayer, i) => { 
+      const positionId = i < 10 ? i + 1 : 10;
+      const foundPlayer = positions.find((pos: any) =>
+        pos.player_id === inningPlayer.playerId
+        && pos.position_id === positionId
+        && pos.team_id === this.currentGame.teamId)
+        filteredPlayers.push(foundPlayer);
+    })
+    const scores: number = filteredPlayers.reduce((accumulator, currentValue) => accumulator + currentValue.weighted_score, 0);
+    const maxValue: number = filteredPlayers.reduce((accumulator, currentValue) => accumulator + (currentValue.position_weight * 5), 0);
+    const percent = Math.round(scores / maxValue * 100);
+    this.inningPercentGrade$.next(percent);
+    switch (true) {
+      case percent > 85: 
+        this.inningPercentSeverity = 'p-badge-success';
+        break
+      case percent > 70:
+        this.inningPercentSeverity = 'p-badge-warning';
+        break;
+      case percent < 70:
+        this.inningPercentSeverity = 'p-badge-danger';
+        break;
+      default:
+        this.inningPercentSeverity = 'p-badge-success';
+        break;
+    }
   }
 }

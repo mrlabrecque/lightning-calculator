@@ -20,11 +20,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { CardModule } from 'primeng/card';
 import { ChipModule } from 'primeng/chip';
+import { DataViewModule } from 'primeng/dataview';
 import { MenubarModule } from 'primeng/menubar';
 import { OrderListModule } from 'primeng/orderlist';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -34,9 +36,16 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { HeaderComponent } from './header/header.component';
 import { LineupComponent } from './lineup/lineup.component';
+import { ManageTeamPlayerComponent } from './manage-team-player/manage-team-player.component';
+import { ManageTeamComponent } from './manage-team/manage-team.component';
 import { TeamSelectorComponent } from './team-selector/team-selector.component';
 import { TrendsComponent } from './trends/trends.component';
 
+import { AccordionModule } from 'primeng/accordion';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { RatingModule } from 'primeng/rating';
+import { SliderModule } from 'primeng/slider';
 
 
 
@@ -49,7 +58,9 @@ import { TrendsComponent } from './trends/trends.component';
     HeaderComponent,
     TrendsComponent,
     LineupComponent,
-    TeamSelectorComponent
+    TeamSelectorComponent,
+    ManageTeamComponent,
+    ManageTeamPlayerComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +75,7 @@ import { TrendsComponent } from './trends/trends.component';
     MultiSelectModule,
     SelectButtonModule,
     FormsModule,
+    ReactiveFormsModule,
     InputSwitchModule,
     MenubarModule,
     BadgeModule,
@@ -78,7 +90,14 @@ import { TrendsComponent } from './trends/trends.component';
     ChipModule,
     ProgressSpinnerModule,
     OverlayPanelModule,
-    TableModule
+    TableModule,
+    DataViewModule,
+    InputTextareaModule,
+    AccordionModule,
+    RatingModule,
+    SliderModule,
+    InputNumberModule
+
   ],
   providers: [DatePipe,MessageService],
   bootstrap: [AppComponent],

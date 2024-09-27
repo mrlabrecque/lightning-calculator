@@ -1,11 +1,13 @@
 export class Player {
-    id?: number;
+    id: number = -1;
     TeamId?: number;
     Name?: string;
     OffensiveData?: string;
+    DefensiveData?: string;
+    PitchingData?: string;
     PitchRanking?: string;
 }
-enum PitchRankingEnum {
+export enum PitchRankingEnum {
     "A",
     "B",
     "C",

@@ -24,7 +24,17 @@ export class MenuBarComponent {
               label: 'Defensive Lineup',
               icon: 'pi pi-list',
               command: () => this.onMenuItemClicked("lineup")
-            } 
+            } ,
+            {
+              label: 'Batting Lineup',
+              icon: 'fa-solid fa-baseball-bat-ball',
+              command: () => this.onMenuItemClicked("batting-lineup")
+            },
+            {
+              label: 'Manage Team',
+              icon: 'fa-solid fa-people-group',
+              command: () => this.onMenuItemClicked("manage-team")
+            }  
         ];
     }
 

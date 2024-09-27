@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivePageService } from './services/active-page.service';
+import { LoaderService } from './services/loader.service';
 import { TeamsService } from './services/teams.service';
 
 
@@ -14,15 +15,20 @@ import { TeamsService } from './services/teams.service';
 })
 export class AppComponent implements OnInit {
   private activePageSubscription: Subscription | undefined = undefined;
+  private currentTeamSubscription: Subscription | undefined = undefined;
+  public currentTeam: any; 
   public activePage: string | undefined = "stats";
   public activePageTitle: string = "Home";
   public title = 'Lightning-Calculator';
-  constructor(private activePageService: ActivePageService, private teamService: TeamsService) {
+  public pageLoading = false;
+  constructor(private activePageService: ActivePageService, private teamService: TeamsService, private loaderService: LoaderService) {
   }
   ngOnInit(): void {
     this.setAllTeams();
     this.getActivePageInLocalStorage();
     this.activePageSubscription = this.activePageService.activePage$.subscribe((pageChanged: any) => this.onActivePageChanged(pageChanged));
+    this.activePageSubscription = this.loaderService.pageLoading$.subscribe((res: any) => this.pageLoading = res);
+    this.currentTeamSubscription = this.teamService.currentTeam$.subscribe((res: any) => this.currentTeam = res);
   }
   async setAllTeams() {
     this.teamService.setAllTeams();
@@ -36,6 +42,12 @@ export class AppComponent implements OnInit {
         break;
       case "lineup":
         this.activePageTitle = "Defensive Lineup";
+        break;
+            case "batting-lineup":
+        this.activePageTitle = "Batting Lineup";
+        break;
+            case "manage-team":
+        this.activePageTitle = "Manage Team";
         break;
     }
 

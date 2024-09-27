@@ -1,10 +1,33 @@
 <app-menu-bar></app-menu-bar>
-<app-header [activePageTitle]="activePageTitle"></app-header>
-<ng-container *ngIf="activePage === 'stats'">
-  <app-trends>
-  </app-trends>
+<div class="flex justify-content-center align-items-center"
+     *ngIf="pageLoading">
+  <p-progressSpinner ariaLabel="loading" />
+</div>
+
+<ng-container *ngIf="!currentTeam.id">
+  <div class="shadow-4 m-3">
+    <div class="ml-3 mr-3">
+      <div class="grid">
+        <div class="col flex justify-content-center">
+          <h3>Please select a team</h3>
+        </div>
+      </div>
+    </div>
+  </div>
 </ng-container>
-<ng-container *ngIf="activePage === 'lineup'">
-  <app-lineup>
-  </app-lineup>
+
+<ng-container *ngIf="!pageLoading && currentTeam.id">
+  <app-header [activePageTitle]="activePageTitle"></app-header>
+  <ng-container *ngIf="activePage === 'stats'">
+    <app-trends>
+    </app-trends>
+  </ng-container>
+  <ng-container *ngIf="activePage === 'lineup'">
+    <app-lineup>
+    </app-lineup>
+  </ng-container>
+  <ng-container *ngIf="activePage === 'manage-team'">
+    <app-manage-team>
+    </app-manage-team>
+  </ng-container>
 </ng-container>

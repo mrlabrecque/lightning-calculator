@@ -1,0 +1,82 @@
+<div class="shadow-4 m-3">
+    <form [formGroup]="playerForm"
+          (ngSubmit)="onSubmit()">
+        <div class="p-4">
+            <h3 class="mt-0">{{currentPlayer.Name}}</h3>
+
+            <p-accordion [activeIndex]="0">
+                <p-accordionTab header="General Info">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <div>
+                            <input type="text"
+                                   class="form-control"
+                                   pInputText
+                                   formControlName="playerName" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="Name">Pitcher Ranking</label>
+                        <div>
+                            <p-dropdown [options]="pitcherRankings"
+                                        [style]="{'width': '100%'}"
+                                        formControlName="pitcherRanking"
+                                        placeholder="Select a Ranking"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="offensiveData">Offensive Data</label>
+                        <div>
+                            <textarea rows="5"
+                                      [style]="{'width': '100%'}"
+                                      formControlName="offensiveData"
+                                      pInputTextarea></textarea>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="defensiveData">Defensive Data</label>
+                        <div>
+                            <textarea rows="5"
+                                      [style]="{'width': '100%'}"
+                                      formControlName="defensiveData"
+                                      pInputTextarea></textarea>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="pitchingData">Pitching Data</label>
+                        <div>
+                            <textarea rows="5"
+                                      [style]="{'width': '100%'}"
+                                      formControlName="pitchingData"
+                                      pInputTextarea></textarea>
+                        </div>
+                    </div>
+                </p-accordionTab>
+                <p-accordionTab header="Position Rankings">
+
+                    <div formArrayName="rankings">
+                        <div *ngFor="let rank of rankings.controls; let i=index"
+                             class="ranking-item flex justify-content-between">
+                            <!-- The repeated alias template -->
+                            <label for="position-rank-{{ i }}">{{positions[i]?.name}}</label>
+                            <input id="position-rank-{{ i }}"
+                                   type="range"
+                                   min="1"
+                                   max="5"
+                                   step="1"
+                                   class="form-range"
+                                   style="width:80%"
+                                   [formControlName]="i">
+                            {{rank.value}}
+                        </div>
+                    </div>
+                </p-accordionTab>
+            </p-accordion>
+            <div class="flex justify-content-end mt-3">
+                <p-button label="Save"
+                          type="submit"
+                          icon="pi pi-save"></p-button>
+            </div>
+        </div>
+    </form>
+</div>

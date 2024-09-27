@@ -30,11 +30,11 @@
   line-height: 1.5em;
 }
 .innings-pitched-warn {
-  color: darkgoldenrod;
+  color: #fdc500;
   font-weight: 800;
 }
 .innings-pitched-danger {
-    color: red;
+    color: #dc0000;
     font-weight: 1000;
 }
 .lineup {
@@ -121,4 +121,19 @@
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.p-badge-warning {
+  background-color: #fdc500;
+  color: white;
+  border-radius: 5px;
+}
+ .p-badge-danger {
+  background-color: #dc0000;
+  color: white;
+  border-radius: 5px;
+ }
+.p-badge-success {
+  background-color: #00ac46;
+  color: white;
+  border-radius: 5px;
 }

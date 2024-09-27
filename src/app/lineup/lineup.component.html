@@ -11,6 +11,8 @@
                     <ng-container *ngIf="!gameInSession">
                         <p-button label="Start New Game"
                                   type="submit"
+                                  [rounded]="true"
+                                  severity="success"
                                   [raised]="true"></p-button>
                     </ng-container>
                 </div>
@@ -31,7 +33,6 @@
                 <span>
                     <p-button [rounded]="true"
                               icon="fa-solid fa-baseball"
-                              severity="secondary"
                               (onClick)="pitchingOverlay.toggle($event)"
                               size="small" />
                 </span>
@@ -83,52 +84,21 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="lineup">
-                        <p-orderList [value]="currentInningPlayersView"
-                                     header="Players"
-                                     [dragdrop]="!currentInning.submitted && isGameCreator"
-                                     [stripedRows]="true">
-                            <ng-template let-inningPlayer
-                                         let-i="index"
-                                         pTemplate="item">
-                                <div class="flex justify-content-between align-items-center"
-                                     [ngClass]="i>8? 'font-bold' : ''">
-                                    <span class="text-s">{{ inningPlayer?.players?.Name }}
-
-                                    </span>
-                                    <span>
-                                        <p-badge [value]="inningPlayer?.players?.PitchRanking"
-                                                 [severity]="inningPlayer?.players?.PitchRanking === 'A' ? 'success' : 
-                                                                inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
-                                                                inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
-                                    </span>
-                                </div>
-                            </ng-template>
-                        </p-orderList>
-                        <ng-container *ngIf="!currentInning.submitted && !isGameCreator">
-                            <div class="locked-overlay">
-                                <div class="locked-object"><i class="pi pi-lock"
-                                       style="font-size: 2.5rem">
-                                    </i>
-                                    <p>Inning needs confirmed by coach</p>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </div> -->
                     <div class="flex justify-content-end mt-2"
                          *ngIf="isGameCreator">
                         <ng-container *ngIf="!currentInning?.submitted">
                             <p-button label="Save Inning"
                                       type="submit"
                                       [disabled]="currentInning.submitted"
-                                      [raised]="true"></p-button>
+                                      [raised]="true"
+                                      [rounded]="true"
+                                      severity="success"></p-button>
                         </ng-container>
                         <ng-container *ngIf="currentInning?.submitted">
                             <p-splitButton label="Next Inning"
                                            [model]="splitButtonList"
-                                           styleClass="p-button-success"
-                                           (onClick)="onNextInningClicked()"
-                                           severity="success" />
+                                           styleClass="p-button-raised p-button-rounded mr-2 mb-2"
+                                           (onClick)="onNextInningClicked()" />
                         </ng-container>
                     </div>
 

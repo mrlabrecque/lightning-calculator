@@ -163,6 +163,7 @@ export class LineupComponent {
   }
 
   async checkIfGameInSessionAndAmITheCreator() {
+    this.loading$.next(true);
     const isThereGameInSession = window.localStorage.getItem("GameInSession");
     if (isThereGameInSession) {
       let gameInSessionId = JSON.parse(isThereGameInSession).id;
@@ -198,6 +199,7 @@ export class LineupComponent {
             this.inningService.currentInning$.next(new Inning())
       this.inningService.currentInningPlayers$.next([new InningPlayerView()])
               this.loading$.next(false);
+
 
     }
   }
@@ -258,8 +260,8 @@ export class LineupComponent {
         && pos.team_id === this.currentGame.teamId)
         filteredPlayers.push(foundPlayer);
     })
-    const scores: number = filteredPlayers.reduce((accumulator, currentValue) => accumulator + currentValue.weighted_score, 0);
-    const maxValue: number = filteredPlayers.reduce((accumulator, currentValue) => accumulator + (currentValue.position_weight * 5), 0);
+    const scores: number = filteredPlayers?.reduce((accumulator, currentValue) => accumulator + (currentValue?.weighted_score || 1), 0);
+    const maxValue: number = filteredPlayers?.reduce((accumulator, currentValue) => accumulator + (currentValue.position_weight * 5), 0);
     const percent = Math.round(scores / maxValue * 100);
     this.inningPercentGrade$.next(percent);
     switch (true) {

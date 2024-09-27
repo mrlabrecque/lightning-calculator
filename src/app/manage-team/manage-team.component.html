@@ -14,8 +14,8 @@
                                     </div>
                                     <div>
                                         <p-button icon="pi pi-chevron-right"
-                                                  rounded="true"
-                                                  raised="'true'"
+                                                  [rounded]="true"
+                                                  [raised]="true"
                                                   [text]="true"
                                                   (onClick)="onPlayerSelected(player.id)"></p-button>
                                     </div>
@@ -27,6 +27,9 @@
             </div>
             <div class="flex justify-content-end">
                 <p-button label="Add Player"
+                          [severity]="'secondary'"
+                          [rounded]="true"
+                          [raised]="true"
                           icon="pi pi-plus"></p-button>
             </div>
         </div>

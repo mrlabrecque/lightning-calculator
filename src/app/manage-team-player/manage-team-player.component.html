@@ -75,10 +75,16 @@
             <div class="flex justify-content-between mt-3">
                 <p-button label="Cancel"
                           type="button"
+                          [rounded]="true"
+                          [raised]="true"
+                          severity="danger"
                           (onClick)="onCancelClicked()"
                           icon="pi pi-times"></p-button>
                 <p-button label="Save"
                           type="submit"
+                          [rounded]="true"
+                          [raised]="true"
+                          severity="success"
                           icon="pi pi-save"></p-button>
 
             </div>

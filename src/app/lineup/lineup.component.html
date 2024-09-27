@@ -6,13 +6,10 @@
     <ng-container *ngIf="!(loading$ | async) && currentGame.id === -1">
         <form #statForm="ngForm"
               (ngSubmit)="createNewGame()">
-            <div class="formgrid grid p-4 flex align-items-end">
-                <div class="col-6">
-                    <app-team-selector></app-team-selector>
-                </div>
-                <div class="col-6">
+            <div class="formgrid grid p-4 flex justify-content-center">
+                <div>
                     <ng-container *ngIf="!gameInSession">
-                        <p-button label="New Game"
+                        <p-button label="Start New Game"
                                   type="submit"
                                   [raised]="true"></p-button>
                     </ng-container>

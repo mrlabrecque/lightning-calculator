@@ -72,10 +72,15 @@
                     </div>
                 </p-accordionTab>
             </p-accordion>
-            <div class="flex justify-content-end mt-3">
+            <div class="flex justify-content-between mt-3">
+                <p-button label="Cancel"
+                          type="button"
+                          (onClick)="onCancelClicked()"
+                          icon="pi pi-times"></p-button>
                 <p-button label="Save"
                           type="submit"
                           icon="pi pi-save"></p-button>
+
             </div>
         </div>
     </form>

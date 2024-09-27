@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChartOptions } from 'chart.js';
 import * as _ from 'lodash';
 import { FilterService } from 'primeng/api';
@@ -17,7 +17,7 @@ import { TeamsService } from '../services/teams.service';
   templateUrl: './trends.component.html',
   styleUrls: ['./trends.component.scss']
 })
-export class TrendsComponent {
+export class TrendsComponent implements OnInit {
   public rosterSubscription: Subscription = this.playerService.currentRoster$.subscribe(res => this.players = res)
    public players: Player[] = [];
   public selectedPlayers: any = []
@@ -38,6 +38,9 @@ export class TrendsComponent {
     private activePageService: ActivePageService,
     private teamService: TeamsService,
     private playerService: RosterService) {
+  }
+  ngOnInit(): void {
+    this.players = this.playerService.currentRoster$.value;
   }
   onPlayerSelectChange(players: Player[]) {
     this.selectedPlayers = players;

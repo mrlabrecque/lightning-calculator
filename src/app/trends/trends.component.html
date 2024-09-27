@@ -2,9 +2,7 @@
     <form #statForm="ngForm"
           (ngSubmit)="onSubmit()">
         <div class="formgrid grid p-4">
-            <div class="field col-6">
-            </div>
-            <div class="field col-6">
+            <div class="field col-12">
                 <label for="stat">Stat</label>
                 <div>
                     <p-autoComplete [(ngModel)]="statToGraph"
@@ -22,7 +20,7 @@
 
                 </div>
             </div>
-            <div class="field col-6">
+            <div class="field col-12">
                 <label for="players">Players</label>
                 <p-multiSelect [options]="players"
                                [(ngModel)]="selectedPlayers"
@@ -36,7 +34,7 @@
                                [showClear]="true"></p-multiSelect>
 
             </div>
-            <div class="field col-6">
+            <div class="field col-12">
                 <label for="type">Type</label>
                 <p-selectButton [options]="buttonOptions"
                                 [(ngModel)]="selectedButton"

@@ -81,4 +81,7 @@ export class ManageTeamPlayerComponent implements OnChanges {
     this.positionRankingService.upsertPositionRankings(playerRankingsToUpdate)
     this.playerSaved.emit(true);
   }
+  onCancelClicked() {
+    this.playerSaved.emit(true);
+  }
 }

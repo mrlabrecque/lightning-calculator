@@ -4,7 +4,7 @@
   <p-progressSpinner ariaLabel="loading" />
 </div>
 
-<ng-container *ngIf="!currentTeam.id">
+<ng-container *ngIf="!pageLoading && !currentTeam.id">
   <div class="shadow-4 m-3">
     <div class="ml-3 mr-3">
       <div class="grid">

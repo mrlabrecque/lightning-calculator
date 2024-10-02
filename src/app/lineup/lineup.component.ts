@@ -72,6 +72,8 @@ export class LineupComponent {
     },
   ];
   sortedInningPlayersByMaxBenched: any;
+  allPlayersPositionRankings: any[] = [];
+  currentInningPlayersWithPositionRankings: any[] = [];
   inningPercentGrade$: BehaviorSubject<number> = new BehaviorSubject(0);
   inningPercentSeverity: string = 'success';
   constructor(
@@ -310,32 +312,32 @@ export class LineupComponent {
     this.checkIfGameInSessionAndAmITheCreator();
   }
   async calculateInningGrade() {
-    let maxNumber: number = 0;
-    let positions: any;
     await this.positionRankingService
       .getPositionsAndWeights(this.currentInningPlayersView)
-      .then((res: any) => (positions = res));
-    const filteredPlayers: any[] = [];
+      .then((res: any) => (this.allPlayersPositionRankings = res));
+    this.currentInningPlayersWithPositionRankings = [];
     this.currentInningPlayersView.forEach((inningPlayer, i) => {
       const positionId = i < 10 ? i + 1 : 10;
-      const foundPlayer = positions.find(
+      const foundPlayer = this.allPlayersPositionRankings.find(
         (pos: any) =>
           pos.player_id === inningPlayer.playerId &&
           pos.position_id === positionId &&
           pos.team_id === this.currentGame.teamId
       );
-      filteredPlayers.push(foundPlayer);
+      this.currentInningPlayersWithPositionRankings.push(foundPlayer);
     });
-    const scores: number = filteredPlayers?.reduce(
-      (accumulator, currentValue) =>
-        accumulator + (currentValue?.weighted_score || 1),
-      0
-    );
-    const maxValue: number = filteredPlayers?.reduce(
-      (accumulator, currentValue) =>
-        accumulator + currentValue.position_weight * 5,
-      0
-    );
+    const scores: number =
+      this.currentInningPlayersWithPositionRankings?.reduce(
+        (accumulator, currentValue) =>
+          accumulator + (currentValue?.weighted_score || 1),
+        0
+      );
+    const maxValue: number =
+      this.currentInningPlayersWithPositionRankings?.reduce(
+        (accumulator, currentValue) =>
+          accumulator + currentValue.position_weight * 5,
+        0
+      );
     const percent = Math.round((scores / maxValue) * 100);
     this.inningPercentGrade$.next(percent);
     switch (true) {
@@ -351,6 +353,103 @@ export class LineupComponent {
       default:
         this.inningPercentSeverity = 'p-badge-success';
         break;
+    }
+  }
+  async pitcherChangedFromDropdown(selectedPitcher: any) {
+    if (!!selectedPitcher) {
+      const tempCurrentInningPlayersView = [...this.currentInningPlayersView];
+      tempCurrentInningPlayersView.forEach(
+        (tempPlayer) => (tempPlayer.position = '')
+      );
+      const tempPitcher = tempCurrentInningPlayersView.find(
+        (temp) => temp.playerId === selectedPitcher.playerId
+      );
+      if (tempPitcher) {
+        tempPitcher.position = 'P';
+      }
+
+      let benchedPositionRankForEachPlayer = this.allPlayersPositionRankings
+        .filter((allPlay) => allPlay.position_name === 'B')
+        .sort((a, b) => b.player_position_score - a.player_position_score);
+      benchedPositionRankForEachPlayer.forEach((ranks) => {
+        ranks.times_benched =
+          this.sortedInningPlayersByMaxBenched.find(
+            (benched: any) => benched.playerId === ranks.player_id
+          )?.timesBenched || 0;
+      });
+      const previousInningPlayers = await this.inningService
+        .getPreviousInningPlayers(this.currentInning)
+        .then((res) => {
+          return res.filter((r) => r.position === 'B');
+        });
+      const lastInningBenchedIds = previousInningPlayers.map(
+        (ip) => ip.playerId
+      );
+
+      //set benched postisions
+      let benchedPlayers = 0;
+      benchedPositionRankForEachPlayer.forEach((benchPos) => {
+        if (this.positions.length - benchedPlayers > 9) {
+          const wasPlayerBenchedLastInning = lastInningBenchedIds.includes(
+            benchPos.player_id
+          );
+          if (!wasPlayerBenchedLastInning) {
+            const tempBench = tempCurrentInningPlayersView.find(
+              (temp) => temp.playerId === benchPos.player_id
+            );
+            if (tempBench && tempBench.position === '') {
+              tempBench.position = 'B';
+              benchedPlayers++;
+            }
+          }
+        }
+      });
+      //   console.log(tempCurrentInningPlayersView);
+      this.positions.forEach((pos) => {
+        const takenPosition = tempCurrentInningPlayersView.filter(
+          (mapped) => !!mapped.position
+        );
+        const takenPositionLetters = takenPosition.map((map) => map.position);
+        const isPositionInLoopTaken = takenPositionLetters.includes(pos.value);
+        if (!isPositionInLoopTaken) {
+          const bestPlayersInPosition = this.allPlayersPositionRankings
+            .filter((appr) => appr.position_name === pos.value)
+            .sort((a, b) => b.player_position_score - a.player_position_score);
+          let found = false;
+          let index = 0;
+          while (!found) {
+            let findPlayerInTempArray: any = tempCurrentInningPlayersView.find(
+              (temp) => temp.playerId === bestPlayersInPosition[index].player_id
+            );
+            if (!!findPlayerInTempArray.position) {
+              index++;
+            } else {
+              found = true;
+              findPlayerInTempArray.position = pos.value;
+            }
+          }
+        }
+      });
+      this.currentInningPlayersView = [];
+      this.positions.forEach((pos) => {
+        if (pos.value !== 'B') {
+          const foundItem = tempCurrentInningPlayersView.find(
+            (tempPlayer) => tempPlayer.position === pos.value
+          );
+          if (foundItem) {
+            this.currentInningPlayersView.push(foundItem);
+          }
+        }
+      });
+      const benchPlayersToPush = tempCurrentInningPlayersView.filter(
+        (tempPlayer) => tempPlayer.position === 'B'
+      );
+      benchPlayersToPush.forEach((player) => {
+        this.currentInningPlayersView.push(player);
+      });
+      this.inningService.currentInningPlayers$.next(
+        this.currentInningPlayersView
+      );
     }
   }
 }

@@ -1,0 +1,36 @@
+<p-dropdown [options]="pitchers"
+            [(ngModel)]="selectedPitcher"
+            optionLabel="playerName"
+            [showClear]="true"
+            [placeholder]="selectedPitcher?.id < 1 ? 'Select a Pitcher' : ''"
+            styleClass="min-w-full max-w-full"
+            name="pitcher"
+            (onChange)="onPitcherChange()"
+            [disabled]="disabled">
+    <ng-template pTemplate="selectedItem">
+        <div class="flex align-items-center gap-2"
+             *ngIf="selectedPitcher">
+            <span style="padding: 0; margin: 0;">
+                <p-badge [value]="selectedPitcher?.players?.PitchRanking"
+                         [severity]="selectedPitcher?.players?.PitchRanking === 'A' ? 'success' : 
+                                                                                                        selectedPitcher?.players?.PitchRanking === 'B' ? 'warning' : 
+                                                                                                        selectedPitcher?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
+            </span>
+            <span class="text-s">{{ selectedPitcher.players.Name }}</span>
+        </div>
+    </ng-template>
+    <ng-template let-inningPlayer
+                 pTemplate="item">
+        <div class="flex justify-content-between align-items-center">
+            <span class="text-s">{{ inningPlayer?.players?.Name }}
+
+            </span>
+            <span style="padding: 0; margin: 0;">
+                <p-badge [value]="inningPlayer?.players?.PitchRanking"
+                         [severity]="inningPlayer?.players?.PitchRanking === 'A' ? 'success' : 
+                                                                                    inningPlayer?.players?.PitchRanking === 'B' ? 'warning' : 
+                                                                                    inningPlayer?.players?.PitchRanking === 'C' ? 'warning' : 'danger'"></p-badge>
+            </span>
+        </div>
+    </ng-template>
+</p-dropdown>

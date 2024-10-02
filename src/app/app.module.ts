@@ -46,6 +46,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RatingModule } from 'primeng/rating';
 import { SliderModule } from 'primeng/slider';
+import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection.component';
 
 
 
@@ -60,7 +61,8 @@ import { SliderModule } from 'primeng/slider';
     LineupComponent,
     TeamSelectorComponent,
     ManageTeamComponent,
-    ManageTeamPlayerComponent
+    ManageTeamPlayerComponent,
+    PitcherSelectionComponent
   ],
   imports: [
     BrowserModule,

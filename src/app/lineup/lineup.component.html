@@ -38,6 +38,11 @@
                 </span>
             </span>
         </div>
+        <div class="p-4 pt-0">
+            <app-pitcher-selection [pitchers]="currentInningPlayersView"
+                                   [disabled]="currentInning.submitted"
+                                   (pitcherChanged)="pitcherChangedFromDropdown($event)"></app-pitcher-selection>
+        </div>
         <div class="grid grid-nogutter pl-4 pr-4">
             <div class="col-3">
                 <div class="header-cell one">

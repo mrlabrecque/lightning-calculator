@@ -5,16 +5,19 @@ import { RosterService } from './roster.service';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TeamsService {
   allTeams$: BehaviorSubject<Team[]> = new BehaviorSubject([new Team()]);
   currentTeam$: BehaviorSubject<Team> = new BehaviorSubject(new Team());
-  teamChangeSubscription: Subscription = this.currentTeam$.pipe(filter((value) => value.id !== undefined)).subscribe((res: Team) =>
-    this.rosterService.setSelectedRoster(res.id)
-  )
+  teamChangeSubscription: Subscription = this.currentTeam$
+    .pipe(filter((value) => value.id !== undefined))
+    .subscribe((res: Team) => this.rosterService.setSelectedRoster(res.id));
 
-  constructor(private supabaseService: SupabaseService, private rosterService: RosterService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private rosterService: RosterService
+  ) {}
 
   getAllTeams(): Team[] {
     return this.allTeams$.value;
@@ -35,9 +38,9 @@ export class TeamsService {
   async setCurrentTeam(id: number) {
     let { data, error } = await this.supabaseService.supabase
       .from('teams')
-      .select('*')
+      .select()
       .eq('id', id);
-    if (data && data?.length > 0){
+    if (data && data?.length > 0) {
       this.currentTeam$.next(<Team>data[0]);
     }
   }

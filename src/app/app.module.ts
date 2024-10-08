@@ -1,5 +1,9 @@
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NO_ERRORS_SCHEMA,
+  NgModule,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DropdownModule } from 'primeng/dropdown';
 
@@ -48,9 +52,9 @@ import { RatingModule } from 'primeng/rating';
 import { SliderModule } from 'primeng/slider';
 import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection.component';
 
-
-
-
+import { SidebarModule } from 'primeng/sidebar';
+import { LoginComponent } from './login/login.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +66,9 @@ import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection
     TeamSelectorComponent,
     ManageTeamComponent,
     ManageTeamPlayerComponent,
-    PitcherSelectionComponent
+    PitcherSelectionComponent,
+    LoginComponent,
+    SignUpComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,14 +104,11 @@ import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection
     AccordionModule,
     RatingModule,
     SliderModule,
-    InputNumberModule
-
+    InputNumberModule,
+    SidebarModule,
   ],
-  providers: [DatePipe,MessageService],
+  providers: [DatePipe, MessageService],
   bootstrap: [AppComponent],
-    schemas: [
-    CUSTOM_ELEMENTS_SCHEMA,
-    NO_ERRORS_SCHEMA
-],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

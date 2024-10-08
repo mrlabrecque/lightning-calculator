@@ -1,44 +1,49 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { ActivePageService } from '../services/active-page.service';
-
+import { Subscription } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-menu-bar',
   templateUrl: './menu-bar.component.html',
-  styleUrls: ['./menu-bar.component.scss']
+  styleUrls: ['./menu-bar.component.scss'],
 })
 export class MenuBarComponent {
+  @Output() clickedEmitter: EventEmitter<MenuItem> = new EventEmitter();
   items: MenuItem[] | undefined;
-  @Output() onPageClicked: EventEmitter<string> = new EventEmitter();
-  constructor(private activePageService: ActivePageService) {
+  loggedUser: any;
+  loggedUserSubscription: Subscription = this.authService.loggedUser$.subscribe(
+    (res) => (this.loggedUser = res)
+  );
+  constructor(private authService: AuthService) {}
+  ngOnInit() {
+    this.items = [
+      {
+        label: 'Stats & Tends',
+        icon: 'pi pi-chart-line',
+        routerLink: '/stats',
+      },
+      {
+        label: 'Defensive Lineup',
+        icon: 'pi pi-list',
+        routerLink: '/defensive-lineup',
+      },
+      {
+        label: 'Batting Lineup',
+        icon: 'fa-solid fa-baseball-bat-ball',
+        routerLink: '/batting-lineup',
+      },
+      {
+        label: 'Manage Team',
+        icon: 'fa-solid fa-people-group',
+        routerLink: '/manage-team',
+      },
+    ];
   }
-    ngOnInit() {
-        this.items = [
-            {
-              label: 'Stats & Tends',
-              icon: 'pi pi-chart-line',
-              command: () => this.onMenuItemClicked("stats")
-            },
-            {
-              label: 'Defensive Lineup',
-              icon: 'pi pi-list',
-              command: () => this.onMenuItemClicked("lineup")
-            } ,
-            {
-              label: 'Batting Lineup',
-              icon: 'fa-solid fa-baseball-bat-ball',
-              command: () => this.onMenuItemClicked("batting-lineup")
-            },
-            {
-              label: 'Manage Team',
-              icon: 'fa-solid fa-people-group',
-              command: () => this.onMenuItemClicked("manage-team")
-            }  
-        ];
-    }
-
-  onMenuItemClicked(clickedPage: any) {
-    this.activePageService.activePage$.next(clickedPage);
+  onMenuClick(itemClicked: MenuItem) {
+    this.clickedEmitter.emit(itemClicked);
+  }
+  logoutClicked() {
+    this.authService.onLogout();
   }
 }

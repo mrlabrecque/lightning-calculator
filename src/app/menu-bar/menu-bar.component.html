@@ -7,7 +7,8 @@
                  let-item
                  let-root="root">
         <a pRipple
-           class="flex align-items-center p-menuitem-link">
+           class="flex align-items-center p-menuitem-link"
+           [routerLink]="item.routerLink">
             <span [class]="item.icon"></span>
             <span class="ml-2">{{ item.label }}</span>
             <p-badge *ngIf="item.badge"
@@ -17,5 +18,12 @@
                [ngClass]="['pi', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
         </a>
     </ng-template>
-    <app-team-selector></app-team-selector>
+    <div *ngIf="loggedUser">
+        <div class="flex flex-column ">
+            <div>{{loggedUser?.user_metadata?.email}} </div>
+            <div class="text-xs"><a (click)="logoutClicked()">Logout</a> </div>
+        </div>
+    </div>
+
+
 </p-menubar>

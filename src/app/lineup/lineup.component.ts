@@ -7,6 +7,7 @@ import { Inning } from '../models/inning';
 import { InningPlayerView } from '../models/inning-player';
 import { Player } from '../models/player';
 import { POSITIONS } from '../models/positions.';
+import { AuthService } from '../services/auth.service';
 import { GamesService } from '../services/games.service';
 import { InningService } from '../services/inning.service';
 import { PositionRankingService } from '../services/position-ranking.service';
@@ -82,7 +83,8 @@ export class LineupComponent {
     private inningService: InningService,
     private rosterService: RosterService,
     private teamService: TeamsService,
-    private positionRankingService: PositionRankingService
+    private positionRankingService: PositionRankingService,
+    private authService: AuthService
   ) {}
   ngOnInit() {
     this.checkIfGameInSessionAndAmITheCreator();
@@ -191,40 +193,29 @@ export class LineupComponent {
 
   async completeGame() {
     this.loading$.next(true);
-    this.removeLocalStorage();
     this.sortedInningPlayersByMaxBenched = [];
     this.gameService.gameInSession$.next(new Game());
     await this.gameService.completeGame(this.currentGame?.id);
     this.loading$.next(false);
   }
-  private removeLocalStorage() {
-    const gameToRemove = window.localStorage.getItem('GameInSession');
-    const gameCreatorToRemove = window.localStorage.getItem('GameCreator');
-    if (gameToRemove) {
-      window.localStorage.removeItem('GameInSession');
-    }
-    if (gameCreatorToRemove) {
-      window.localStorage.removeItem('GameCreator');
-    }
-    this.gameService.isGameCreator$.next(false);
-  }
 
   async checkIfGameInSessionAndAmITheCreator() {
     this.loading$.next(true);
-    const isThereGameInSession = window.localStorage.getItem('GameInSession');
-    if (isThereGameInSession) {
-      let gameInSessionId = JSON.parse(isThereGameInSession).id;
-      let teamId = JSON.parse(isThereGameInSession).teamId;
-      const isGameActive = await this.gameService.isGameActive(gameInSessionId);
-      const amGameCreator = window.localStorage.getItem('GameCreator');
-      if (isGameActive) {
+    const loggedUser = this.authService.loggedUser$.value;
+    if (loggedUser) {
+      const teamIdOfLoggedUser = loggedUser?.user_metadata?.associatedTeamId;
+      const activeGame = await this.gameService.getAnyActiveGameFromTeam(
+        teamIdOfLoggedUser
+      );
+      if (activeGame) {
+        const amGameCreator = loggedUser.id === activeGame.game_owner;
         if (amGameCreator) {
           this.gameService.isGameCreator$.next(true);
         }
         const currentGameInSession =
-          await this.gameService.getAnyActiveGameFromTeam(teamId);
+          await this.gameService.getAnyActiveGameFromTeam(teamIdOfLoggedUser);
         const currentInningInSession =
-          await this.inningService.getActiveInningByGameId(gameInSessionId);
+          await this.inningService.getActiveInningByGameId(activeGame.id);
         const currentInningPlayersInSession =
           await this.inningService.getCurrentActiveInningPlayers(
             currentInningInSession.id
@@ -237,16 +228,13 @@ export class LineupComponent {
           this.inningService.addAnyNeededBenchPositions(
             currentInningPlayersInSession
           );
-          this.gameService.currentGame$.next(
-            currentGameInSession[currentGameInSession.length - 1]
-          );
+          this.gameService.currentGame$.next(currentGameInSession);
           this.inningService.currentInning$.next(currentInningInSession);
           this.inningService.currentInningPlayers$.next(
             currentInningPlayersInSession
           );
         }
       } else {
-        this.removeLocalStorage();
         this.gameService.currentGame$.next(new Game());
         this.gameInSession = null;
         this.inningService.currentInning$.next(new Inning());
@@ -254,7 +242,6 @@ export class LineupComponent {
         this.loading$.next(false);
       }
     } else {
-      this.removeLocalStorage();
       this.gameService.currentGame$.next(new Game());
       this.gameInSession = null;
       this.inningService.currentInning$.next(new Inning());

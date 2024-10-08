@@ -1,5 +1,5 @@
 :host ::ng-deep {
-  .p-orderlist-controls{
+  .p-orderlist-controls {
     display: none;
   }
 }
@@ -13,16 +13,16 @@
 //   }
 // }
 .header-cell {
-  padding:10px;
+  padding: 10px;
   border: solid 1px #ccc;
   background: #eee;
- 
-  border-bottom:none;
+
+  border-bottom: none;
   &.one {
     border-radius: 5px 0 0 0;
     border-right: none;
   }
-   &.two {
+  &.two {
     border-radius: 0 5px 0 0;
   }
 }
@@ -34,41 +34,40 @@
   font-weight: 800;
 }
 .innings-pitched-danger {
-    color: #dc0000;
-    font-weight: 1000;
+  color: #dc0000;
+  font-weight: 1000;
 }
 .lineup {
   position: relative;
 }
 .locked-overlay {
-        display: block;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top:0;
-        left:0;
-        background: rgba(0,0,0,0.6);
-        z-index:9999;
-        color:#fff;
-        overflow:hidden;
-        border-radius: 5px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  color: #fff;
+  overflow: hidden;
+  border-radius: 5px;
 }
 .locked-object {
-        display: inline-block;
-        width:100%;
-        text-align:center;
-        vertical-align:middle;
-        overflow:hidden;
-        margin: 0 auto;
-        position: relative;
-        top: 50%;
-        -webkit-transform: translateY(-50%);
-        transform: translateY(-50%);
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 .a-pitch {
   background-color: blue;
 }
-
 
 //Drag and drop stuff
 .example-list {
@@ -85,7 +84,7 @@
 }
 
 .example-box {
-  padding:10px;
+  padding: 10px;
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   box-sizing: border-box;
@@ -95,13 +94,20 @@
 .move {
   cursor: move;
 }
+.blur {
+  position: absolute;
+  height: 100%;
+  width: 95%;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+}
 
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
@@ -127,11 +133,11 @@
   color: white;
   border-radius: 5px;
 }
- .p-badge-danger {
+.p-badge-danger {
   background-color: #dc0000;
   color: white;
   border-radius: 5px;
- }
+}
 .p-badge-success {
   background-color: #00ac46;
   color: white;

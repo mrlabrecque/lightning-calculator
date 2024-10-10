@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { TeamsService } from '../services/teams.service';
 
 @Component({
   selector: 'app-menu-bar',
@@ -15,7 +16,13 @@ export class MenuBarComponent {
   loggedUserSubscription: Subscription = this.authService.loggedUser$.subscribe(
     (res) => (this.loggedUser = res)
   );
-  constructor(private authService: AuthService) {}
+  currentTeam: any;
+  currentTeamSubscription: Subscription =
+    this.teamService.currentTeam$.subscribe((res) => (this.currentTeam = res));
+  constructor(
+    private authService: AuthService,
+    private teamService: TeamsService
+  ) {}
   ngOnInit() {
     this.items = [
       {

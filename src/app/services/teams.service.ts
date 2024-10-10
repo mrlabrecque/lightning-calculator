@@ -44,4 +44,12 @@ export class TeamsService {
       this.currentTeam$.next(<Team>data[0]);
     }
   }
+
+  async updateTeamProfile(updatedTeamProfile: any) {
+    const { data, error } = await this.supabaseService.supabase
+      .from('teams')
+      .upsert(updatedTeamProfile)
+      .select();
+    console.log(error);
+  }
 }

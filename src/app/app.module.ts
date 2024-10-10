@@ -52,7 +52,9 @@ import { RatingModule } from 'primeng/rating';
 import { SliderModule } from 'primeng/slider';
 import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection.component';
 
+import { FileUploadModule } from 'primeng/fileupload';
 import { SidebarModule } from 'primeng/sidebar';
+import { ImageUploadWidgetComponent } from './image-upload-widget/image-upload-widget.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
@@ -69,6 +71,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     PitcherSelectionComponent,
     LoginComponent,
     SignUpComponent,
+    ImageUploadWidgetComponent,
   ],
   imports: [
     BrowserModule,
@@ -106,6 +109,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     SliderModule,
     InputNumberModule,
     SidebarModule,
+    FileUploadModule,
   ],
   providers: [DatePipe, MessageService],
   bootstrap: [AppComponent],

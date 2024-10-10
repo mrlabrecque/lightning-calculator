@@ -1,0 +1,19 @@
+<div>
+    <img *ngIf="_imageUrl"
+         [src]="_imageUrl"
+         alt="jpg"
+         class="image image"
+         style="width: 150px" />
+</div>
+<div>
+    <label for="upload-button"
+           class="bg-primary font-bold">
+        {{ uploading ? 'Uploading ...' : _imageUrl ? 'Change Image': 'Upload Image' }}
+    </label>
+    <input type="file"
+           id="upload-button"
+           accept="image/*"
+           (change)="uploadImage($event)"
+           [disabled]="uploading"
+           hidden />
+</div>

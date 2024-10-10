@@ -19,9 +19,21 @@
         </a>
     </ng-template>
     <div *ngIf="loggedUser">
-        <div class="flex flex-column ">
-            <div>{{loggedUser?.user_metadata?.email}} </div>
-            <div class="text-xs"><a (click)="logoutClicked()">Logout</a> </div>
+        <div class="flex flex-column">
+            <div>{{loggedUser?.user_metadata?.email}} <span class="pi pi-angle-down"
+                      (click)="op.toggle($event)"></span></div>
+            <p-overlayPanel #op>
+                <a style="cursor:pointer;">
+                    <div class="flex justify-content-between"
+                         style="width: 80px;"><span class="pi pi-user"></span> <span>Profile</span></div>
+                </a>
+                <a (click)="logoutClicked()"
+                   style="cursor:pointer;">
+                    <div class="flex justify-content-between"
+                         style="width: 80px;"><span class="pi pi-sign-out"></span> <span>Logout</span></div>
+                </a> </p-overlayPanel>
+            <div class="text-xs text-right">{{currentTeam?.name}} </div>
+            <!-- <div class="text-xs"><a (click)="logoutClicked()">Logout</a> </div> -->
         </div>
     </div>
 

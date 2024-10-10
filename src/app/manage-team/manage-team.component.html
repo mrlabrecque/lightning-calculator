@@ -1,4 +1,91 @@
-<ng-container *ngIf="currentRoster.length > 1 && !editMode">
+<ng-container *ngIf="!editMode">
+    <div class="shadow-4 m-3">
+        <form [formGroup]="teamForm"
+              (ngSubmit)="onSubmit()">
+            <div class="p-4">
+                <h3 class="mt-0">{{currentTeam.name}}</h3>
+
+                <p-accordion [activeIndex]="0">
+                    <p-accordionTab header="General Info">
+                        <div class="form-group">
+                            <div class="field">
+                                <label for="teamName">Team Name</label>
+                                <div>
+                                    <input type="text"
+                                           class="form-control"
+                                           pInputText
+                                           formControlName="teamName" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="field">
+                                <label for="teamImageUrl">Team Logo</label>
+                                <div class="mt-3">
+                                    <app-image-upload-widget [imageUrl]="avatarUrl"
+                                                             [assetType]="'team_logos'"
+                                                             [assetId]="currentTeam?.id?.toString() || '0'"
+                                                             (upload)="updateTeamLogo($event)"> </app-image-upload-widget>
+                                </div>
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Roster">
+
+                        <ng-container *ngIf="currentRoster.length > 1 && !editMode">
+                            <div class="grid">
+                                <div class="col">
+                                    <p-dataView #dv
+                                                [value]="currentRoster">
+                                        <ng-template let-player
+                                                     pTemplate="listItem">
+                                            <div class="col-12 p-1">
+                                                <div class="flex justify-content-between align-items-center">
+                                                    <div class="text-xl">
+                                                        {{player.Name}}
+                                                    </div>
+                                                    <div>
+                                                        <p-button icon="pi pi-chevron-right"
+                                                                  [text]="true"
+                                                                  (onClick)="onPlayerSelected(player.id)"></p-button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dataView>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-end">
+                                <p-button label="Add Player"
+                                          [severity]="'secondary'"
+                                          [rounded]="true"
+                                          [raised]="true"
+                                          icon="pi pi-plus"></p-button>
+                            </div>
+                        </ng-container>
+                    </p-accordionTab>
+                </p-accordion>
+                <div class="flex justify-content-end mt-3">
+                    <p-button label="Save"
+                              type="submit"
+                              [rounded]="true"
+                              [raised]="true"
+                              severity="success"
+                              icon="pi pi-save"></p-button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-container>
+
+
+
+
+
+
+
+<!-- <ng-container *ngIf="currentRoster.length > 1 && !editMode">
     <div class="shadow-4 m-3">
         <div class="ml-3 mr-3 pb-3">
             <div class="grid">
@@ -7,15 +94,13 @@
                                 [value]="currentRoster">
                         <ng-template let-player
                                      pTemplate="listItem">
-                            <div class="col-12 p-3">
+                            <div class="col-12 p-1">
                                 <div class="flex justify-content-between align-items-center">
                                     <div class="text-xl">
                                         {{player.Name}}
                                     </div>
                                     <div>
                                         <p-button icon="pi pi-chevron-right"
-                                                  [rounded]="true"
-                                                  [raised]="true"
                                                   [text]="true"
                                                   (onClick)="onPlayerSelected(player.id)"></p-button>
                                     </div>
@@ -34,7 +119,7 @@
             </div>
         </div>
     </div>
-</ng-container>
+</ng-container> -->
 
 
 <ng-container *ngIf="editMode">

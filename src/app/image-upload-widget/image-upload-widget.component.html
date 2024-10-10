@@ -5,11 +5,10 @@
          class="image image"
          style="width: 150px" />
 </div>
-<div>
-    <label for="upload-button"
-           class="bg-primary font-bold">
+<div style="height: 50px;">
+    <span class="bg-primary font-bold image-label">
         {{ uploading ? 'Uploading ...' : _imageUrl ? 'Change Image': 'Upload Image' }}
-    </label>
+    </span>
     <input type="file"
            id="upload-button"
            accept="image/*"

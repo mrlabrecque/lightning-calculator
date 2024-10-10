@@ -30,6 +30,7 @@ export class ManageTeamComponent {
   teamForm = this.formBuilder.group({
     teamName: [this.currentTeam.name],
     teamImageUrl: [this.currentTeam.imageUrl],
+    teamJoinCode: [this.currentTeam.join_code],
   });
   constructor(
     private teamService: TeamsService,

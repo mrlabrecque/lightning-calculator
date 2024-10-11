@@ -54,8 +54,11 @@ import { PitcherSelectionComponent } from './pitcher-selection/pitcher-selection
 
 import { FileUploadModule } from 'primeng/fileupload';
 import { SidebarModule } from 'primeng/sidebar';
+import { TagModule } from 'primeng/tag';
+import { BattingLineupComponent } from './batting-lineup/batting-lineup.component';
 import { ImageUploadWidgetComponent } from './image-upload-widget/image-upload-widget.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
 @NgModule({
@@ -72,6 +75,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     LoginComponent,
     SignUpComponent,
     ImageUploadWidgetComponent,
+    ProfileComponent,
+    BattingLineupComponent,
   ],
   imports: [
     BrowserModule,
@@ -110,6 +115,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     InputNumberModule,
     SidebarModule,
     FileUploadModule,
+    TagModule,
   ],
   providers: [DatePipe, MessageService],
   bootstrap: [AppComponent],

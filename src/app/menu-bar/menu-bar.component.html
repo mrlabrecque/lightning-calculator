@@ -23,7 +23,8 @@
             <div>{{loggedUser?.user_metadata?.email}} <span class="pi pi-angle-down"
                       (click)="op.toggle($event)"></span></div>
             <p-overlayPanel #op>
-                <a style="cursor:pointer;">
+                <a style="cursor:pointer; text-decoration: none;"
+                   [routerLink]="'profile'">
                     <div class="flex justify-content-between"
                          style="width: 80px;"><span class="pi pi-user"></span> <span>Profile</span></div>
                 </a>

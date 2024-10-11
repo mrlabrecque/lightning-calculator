@@ -1,0 +1,127 @@
+<div class="shadow-4 m-3">
+    <div class="grid grid-nogutter p-4"
+         style="position: relative;">
+        <div class="col-1">
+            <div class="header-cell one">#</div>
+        </div>
+        <div class="col-3">
+            <div class="header-cell">Name</div>
+        </div>
+        <div class="col-2">
+            <div class="header-cell">AVG</div>
+        </div>
+        <div class="col-2">
+            <div class="header-cell">SLG</div>
+        </div>
+        <div class="col-2">
+            <div class="header-cell">OBP</div>
+        </div>
+        <div class="col-2">
+            <div class="header-cell two">OPS</div>
+        </div>
+        <div class="col-12">
+            <div cdkDropList
+                 (cdkDropListDropped)="drop($event)"
+                 class="example-list">
+                <div class="example-box grid "
+                     *ngFor="let inningPlayer of currentRoster; let i = index"
+                     cdkDrag>
+                    <div class="col-1"><span class="text-s">{{ i + 1 }}
+                        </span></div>
+                    <div class="col-3"><span class="text-s">{{ inningPlayer?.Name }}
+                        </span></div>
+                    <div class="col-2"><p-tag [value]="inningPlayer?.avg?.toString() || '0'"
+                               [severity]="getSeverity(inningPlayer?.avg || 0) || ''"></p-tag></div>
+                    <div class="col-2"><p-tag [value]="inningPlayer?.slg?.toString() || '0'"
+                               [severity]="getSeverity(inningPlayer?.slg || 0) || ''"></p-tag></div>
+                    <div class="col-2"><p-tag [value]="inningPlayer?.obp?.toString() || '0'"
+                               [severity]="getSeverity(inningPlayer?.obp || 0) || ''"></p-tag></div>
+                    <div class="col-2"><p-tag [value]="inningPlayer?.ops?.toString() || '0'"
+                               [severity]="getSeverity(inningPlayer?.ops || 0) || ''"></p-tag></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- <div class="shadow-4 m-3">
+    <div class="grid grid-nogutter p-4"
+         style="position: relative;">
+        <div class="col-12">
+            <p-table [value]="currentRoster"
+                     styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 10%;">#</th>
+                        <th style="width: 10%;">Name</th>
+                        <th style="width: 10%;">AVG</th>
+                        <th style="width: 10%;">SLG</th>
+                        <th style="width: 10%;">OBP</th>
+                        <th style="width: 10%;">OPS</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-product
+                             let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="width: 10%;">{{ rowIndex + 1 }}</td>
+                        <td style="width: 10%;">{{ product.Name }}</td>
+                        <td style="width: 10%;">{{ product.avg }}</td>
+                        <td style="width: 10%;">{{ product.slg }}</td>
+                        <td style="width: 10%;">{{ product.obp }}</td>
+                        <td style="width: 10%;">{{ product.ops }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div> -->
+<!-- <div class="shadow-4 m-3">
+    <div class="grid grid-nogutter p-4"
+         style="position: relative;">
+        <div class="col-12">
+            <mat-table #table
+                       [dataSource]="currentRoster"
+                       class="mat-elevation-z8"
+                       cdkDropList
+                       (cdkDropListDropped)="drop($event)"
+                       cdkDropListData="dataSource">
+                <ng-container matColumnDef="position">
+
+                    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.position}} 1</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="avg">
+                    <mat-header-cell *matHeaderCellDef> AVG </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.avg}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="slg">
+                    <mat-header-cell *matHeaderCellDef> SLG </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.slg}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="obp">
+                    <mat-header-cell *matHeaderCellDef> OBP </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.obp}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ops">
+                    <mat-header-cell *matHeaderCellDef> OPS </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.ops}}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"
+                         cdkDrag
+                         [cdkDragData]="row"></mat-row>
+            </mat-table>
+        </div>
+    </div>
+</div> -->

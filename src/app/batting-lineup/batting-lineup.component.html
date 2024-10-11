@@ -28,7 +28,7 @@
                      cdkDrag>
                     <div class="col-1"><span class="text-s">{{ i + 1 }}
                         </span></div>
-                    <div class="col-3"><span class="text-s">{{ inningPlayer?.Name }}
+                    <div class="col-3"><span class="text-s">{{ inningPlayer?.Name || '' | playerNameNumber: inningPlayer?.jersey_number}}
                         </span></div>
                     <div class="col-2"><p-tag [value]="inningPlayer?.avg?.toString() || '0'"
                                [severity]="getSeverity(inningPlayer?.avg || 0) || ''"></p-tag></div>

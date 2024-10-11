@@ -60,6 +60,7 @@ import { ImageUploadWidgetComponent } from './image-upload-widget/image-upload-w
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { PlayerNameNumberPipe } from './player-name-number.pipe';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ImageUploadWidgetComponent,
     ProfileComponent,
     BattingLineupComponent,
+    PlayerNameNumberPipe,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,16 @@
 <div class="shadow-4 m-3">
+    <div class="flex justify-content-between p-4 pb-0">
+        <button pButton
+                pRipple
+                [label]="'Calculate'"
+                class="p-button-success"></button>
+        <p-selectButton [options]="buttonOptions"
+                        [(ngModel)]="buttonValue"
+                        optionLabel="label"
+                        optionValue="value"></p-selectButton>
+    </div>
+
+
     <div class="grid grid-nogutter p-4"
          style="position: relative;">
         <div class="col-1">

@@ -1,6 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
-import { MatTable } from '@angular/material/table';
+import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Player } from '../models/player';
 import { RosterService } from '../services/roster.service';
@@ -11,13 +10,18 @@ import { RosterService } from '../services/roster.service';
   styleUrls: ['./batting-lineup.component.scss'],
 })
 export class BattingLineupComponent {
-  @ViewChild('table', { static: true }) table: MatTable<Player> | undefined;
   currentRoster: Player[] = [];
   curretnRosterSubscription: Subscription =
     this.rosterSerive.currentRoster$.subscribe(
       (res) => (this.currentRoster = res)
     );
   displayedColumns: string[] = ['position', 'name', 'avg', 'slg', 'obp', 'ops'];
+  buttonValue: string = 'normal';
+  buttonOptions: any[] = [
+    { label: 'Print', value: 'print' },
+    { label: 'Normal', value: 'normal' },
+    { label: 'Advanced', value: 'advanced' },
+  ];
   constructor(private rosterSerive: RosterService) {}
   drop(event: CdkDragDrop<string>) {
     moveItemInArray(
